@@ -29,6 +29,8 @@ public class AxisCamera {
 	// cgiURL = new URL(mainURL, "/axis-cgi"); // cgiURL is "http://ip/axis-cgi"
 	// imageURL = relativeURL(cgiURL, "/jpg/image.cgi"); // imageURL is
 	// "http://ip/jpg/image.cgi"
+	// TLDR: making a relative URL from a relative URL using the URL class's
+	// constructor doesn't work
 	// I know that seems strange, but it is the way it works, so if you want to
 	// do this instead use the relative URL method
 	
