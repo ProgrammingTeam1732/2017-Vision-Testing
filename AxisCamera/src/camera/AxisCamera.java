@@ -77,7 +77,6 @@ public class AxisCamera {
 		try {
 			return ImageIO.read(imageURL);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -86,12 +85,11 @@ public class AxisCamera {
 	private String sendGet(URL url) throws IOException {
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		
-		// optional default is GET
 		con.setRequestMethod("GET");
 		
 		int responseCode = con.getResponseCode();
-		System.out.println("\nSending 'GET' request to URL : " + url);
-		System.out.println("Response Code : " + responseCode);
+		System.out.printf("Sending 'GET' request to URL : %s%n", url.toString());
+		System.out.printf("Response Code : %d%n", responseCode);
 		
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		String inputLine;
