@@ -12,7 +12,6 @@ import javax.imageio.ImageIO;
 
 public class AxisCamera {
 	
-	// test commit test 2
 	private URL mainURL;
 	private URL cgiURL;
 	private URL mediaURL;
