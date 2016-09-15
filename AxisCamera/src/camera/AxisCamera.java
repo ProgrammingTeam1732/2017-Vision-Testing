@@ -16,25 +16,34 @@ public class AxisCamera {
 	private URL cgiURL;
 	private URL mediaURL;
 	private URL imageURL;
-	// not recommended to get a single image at a time, if we use openCV or
-	// something I am pretty sure we can open a video stream and use that, much
-	// better speed/etc.
+	// We should not directly get the jpg for image processing, it is much
+	// slower than a video stream. I think openCV and probably other CV
+	// libraries support using video streams for input.
 	private URL bmpURL;
 	private URL rtspURL;
 	private URL mjpgURL;
 	
+	// A note about the URL(URL context, String spec) constructor:
+	// This will be easier to show than explain
+	// mainURL = new URL("http://" + ip); // mainURL is "http://ip"
+	// cgiURL = new URL(mainURL, "/axis-cgi"); // cgiURL is "http://ip/axis-cgi"
+	// imageURL = relativeURL(cgiURL, "/jpg/image.cgi"); // imageURL is
+	// "http://ip/jpg/image.cgi"
+	// I know that seems strange, but it is the way it works, so if you want to
+	// do this instead use the relative URL method
+	
+	// Another note about any URL constructor:
+	// It seems that it will remove any forward slashes at the end, like this:
+	// URL url = new URL("http://" + ip + "/"); // url is "http://ip"
+	// Do not try to shorten the code by adding backslashes at the end of a URL
+	// (making it shorter by saving backslashes in future relative URLs), they
+	// will be removed
+	
 	public AxisCamera(String ip) throws MalformedURLException {
-		// cannot make a relative url from another relative url, must use
-		// absolute url for base or use the private relativeURL() method
 		mainURL = new URL("http://" + ip);
 		cgiURL = relativeURL(mainURL, "/axis-cgi");
-		// backslashes at the end of URLs are automatically removed, don't try
-		// to shorten code by doing that
 		mediaURL = relativeURL(mainURL, "/axis-media");
-		// would be okay to use the class URL's relative URL constructor in the
-		// above case
 		imageURL = relativeURL(cgiURL, "/jpg/image.cgi");
-		System.out.println(imageURL);
 		rtspURL = relativeURL(mediaURL, "/media.amp");
 		mjpgURL = relativeURL(cgiURL, "/mjpg/video.cgi");
 		bmpURL = relativeURL(cgiURL, "/bitmap/image.bmp");
@@ -72,7 +81,8 @@ public class AxisCamera {
 		return bmpURL;
 	}
 	
-	// Not recomended we use this for image processing
+	// We should not directly get the jpg for image processing, it is much
+	// slower than a video stream.
 	public BufferedImage getBufferedImage() {
 		try {
 			return ImageIO.read(imageURL);
@@ -96,13 +106,12 @@ public class AxisCamera {
 		StringBuffer response = new StringBuffer();
 		
 		while ( (inputLine = in.readLine()) != null ) {
+			System.out.println(inputLine);
 			response.append(inputLine);
 		}
 		in.close();
 		
-		// return result
 		return response.toString();
-		
 	}
 	
 }
