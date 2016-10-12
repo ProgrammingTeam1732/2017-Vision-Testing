@@ -16,13 +16,6 @@ public class AxisCamera {
 	private URL mainURL;
 	private URL cgiURL;
 	private URL mediaURL;
-	private URL imageURL;
-	// We should not directly get the jpg for image processing, it is much
-	// slower than a video stream. I think openCV and probably other CV
-	// libraries support using video streams for input.
-	private URL bmpURL;
-	private URL rtspURL;
-	private URL mjpgURL;
 
 	// A note about the URL(URL context, String spec) constructor:
 	// This will be easier to show than explain
@@ -55,50 +48,47 @@ public class AxisCamera {
 		}
 	}
 
+	private int compression = 30;
+	private int fps = 10;
+
+	private static final String user = "root";
+	private static final String pass = "root";
+
 	public AxisCamera(String ip) throws MalformedURLException {
 		mainURL = new URL("http://" + ip);
 		cgiURL = relativeURL(mainURL, "/axis-cgi");
 		mediaURL = relativeURL(mainURL, "/axis-media");
-		imageURL = relativeURL(cgiURL, "/jpg/image.cgi");
-		rtspURL = relativeURL(mediaURL, "/media.amp");
-		mjpgURL = relativeURL(cgiURL, "/mjpg/video.cgi");
-		bmpURL = relativeURL(cgiURL, "/bitmap/image.bmp");
 	}
 
-	private URL relativeURL(URL base, String ending) throws MalformedURLException {
-		return new URL(base.toString() + ending);
-	}
-
-	public URL getMainURL() {
-		return mainURL;
-	}
-
-	public URL getCgiURL() {
-		return cgiURL;
-	}
-
-	public URL getMediaURL() {
-		return mediaURL;
-	}
-
-	public URL getImageURL() {
+	private URL relativeURL(URL base, String ending) {
 		try {
-			return relativeURL(imageURL, "?resolution=" + resolution.value);
-		} catch (Exception E) {
-			return imageURL;
+			return new URL(base.toString() + ending);
+		} catch (MalformedURLException e) {
+			System.err.println("Cannot form relative URL, programmer screwed up the spelling of the ending");
+			System.err.println("Ending: " + ending);
+			e.printStackTrace();
+			return null;
 		}
 	}
 
-	public URL getRtspURL() {
-		return rtspURL;
+	public URL getBmpURL() {
+		return relativeURL(cgiURL, "/bitmap/image.bmp" + getImageArguements());
+	}
+
+	public URL getImageURL() {
+		return relativeURL(cgiURL, "/jpg/image.cgi" + getImageArguements());
 	}
 
 	public URL getMjpgURL() {
-		return mjpgURL;
+		return relativeURL(cgiURL, "/mjpg/video.cgi" + getImageArguements() + "&fps=" + fps);
 	}
 
-	public URL getBmpURL() {
-		return bmpURL;
+	private String getImageArguements() {
+		return "?resolution=" + resolution.value + "&compression=" + compression;
+	}
+
+	public URL getRtspURL() {
+		return relativeURL(mediaURL, "/media.amp");
 	}
 
 	public void setResolution(Resolution r) {
@@ -107,6 +97,25 @@ public class AxisCamera {
 
 	public Resolution getResolution() {
 		return resolution;
+	}
+
+	public void setCompression(int aCompression) {
+		// sets to 0 if less than 0, if greater than 0 checks if greater than
+		// 100 then sets to 100, otherwise sets to aCompression
+		compression = aCompression < 0 ? 0 : aCompression > 100 ? 100 : aCompression;
+	}
+
+	public int getCompression() {
+		return compression;
+	}
+
+	public void setFPS(int aFPS) {
+		// if less than 0 sets it to 0
+		fps = aFPS < 0 ? 0 : aFPS;
+	}
+
+	public int getFPS() {
+		return fps;
 	}
 
 	// We should not directly get the jpg for image processing, it is much
@@ -120,11 +129,41 @@ public class AxisCamera {
 		return null;
 	}
 
+	public String VAPIXVersion() {
+		try {
+			return sendGet(relativeURL(cgiURL, "/param.cgi?action=list&group=Properties.API.HTTP.Version"));
+		} catch (IOException e) {
+			System.err.println("Could not check VAPIX version, sendGet() method failed");
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public String supportedResolutions() {
+		try {
+			return sendGet(relativeURL(cgiURL, "/param.cgi?action=list&group=Properties.Image.Resolution"));
+		} catch (IOException e) {
+			System.err.println("Could not check supported resolutions, sendGet() method failed");
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public String supportedImageFormats() {
+		try {
+			return sendGet(relativeURL(cgiURL, "/param.cgi?action=list&group=Properties.Image.Format"));
+		} catch (IOException e) {
+			System.err.println("Could not check supported image formats, sendGet() method failed");
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public String sendGet(URL url) throws IOException {
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
 		con.setRequestMethod("GET");
-		String userCredentials = "root:root";
+		String userCredentials = user + ":" + pass;
 		String basicAuth = "Basic " + new String(Base64.getEncoder().encodeToString(userCredentials.getBytes()));
 		con.setRequestProperty("Authorization", basicAuth);
 
@@ -137,7 +176,6 @@ public class AxisCamera {
 		StringBuffer response = new StringBuffer();
 
 		while ((inputLine = in.readLine()) != null) {
-			System.out.println(inputLine);
 			response.append(inputLine);
 		}
 		in.close();

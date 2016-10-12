@@ -13,6 +13,8 @@ public class Testing {
 
 	public static void main(String[] args) throws Exception {
 		AxisCamera camera = new AxisCamera("169.254.148.78");
+		System.out.println(camera.supportedImageFormats());
+		System.out.println(camera.supportedResolutions());
 		ImageIcon icon = new ImageIcon(camera.getBufferedImage());
 		JFrame frame = new JFrame();
 		frame.getContentPane().setLayout(new FlowLayout());
@@ -21,20 +23,28 @@ public class Testing {
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Timer timer = new Timer();
-		while (timer.getElapsedTime() < 10 * 1000) {
+		while (timer.getElapsedTime() < 5 * 1000) {
 			icon.setImage(camera.getBufferedImage());
 			frame.repaint();
 		}
 		camera.setResolution(Resolution.r320x240);
 		timer.reset();
-		while (timer.getElapsedTime() < 10 * 1000) {
+		while (timer.getElapsedTime() < 5 * 1000) {
+			icon.setImage(camera.getBufferedImage());
+			frame.repaint();
+		}
+		camera.setCompression(100);
+		timer.reset();
+		while (timer.getElapsedTime() < 5 * 1000) {
 			icon.setImage(camera.getBufferedImage());
 			frame.repaint();
 		}
 	}
+
 }
 
 class Timer {
+
 	private long time;
 
 	public Timer() {
@@ -48,4 +58,5 @@ class Timer {
 	public void reset() {
 		time = System.currentTimeMillis();
 	}
+
 }
