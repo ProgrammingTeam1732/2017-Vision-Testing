@@ -1,5 +1,6 @@
 package org.usfirst.frc.team1732.image;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -28,7 +29,7 @@ public class LiveVideoFeed {
 		frame.setResizable(true);
 		frame.setLocationRelativeTo(null);
         ImageIcon image = new ImageIcon(createAwtImage(mat));
-		frame.setSize(image.getIconWidth()+10,image.getIconHeight()+35);
+		frame.setSize(image.getIconWidth()+100,image.getIconHeight()+350);
     	JLabel label1 = new JLabel(" ", image, JLabel.CENTER);
 		frame.getContentPane().add(label1);
         frame.validate();
@@ -37,20 +38,23 @@ public class LiveVideoFeed {
 	    while(true){
 	    	start = System.currentTimeMillis();
 	    	camera.read(mat);
-	    	image.setImage(createAwtImage(mat));
-	    	label1 = new JLabel(" ", image, JLabel.CENTER);
-	    	frame.getContentPane().add(label1);
+	    	image.setImage(blue(createAwtImage(mat)));
+	    	frame.getContentPane().add(new JLabel(" ", image, JLabel.CENTER));
 	    	frame.validate();
 	    	System.out.println(System.currentTimeMillis() - start);
 		}
-	    
-		
 		//ImageIcon image = new ImageIcon(createAwtImage(mat));
 		
 		//camera.release();
 	}
-	public static Image blackAndWhite(BufferedImage b){
-		return null;
+	public static Image blue(BufferedImage b){
+		BufferedImage total = new BufferedImage(b.getWidth(), b.getHeight(), BufferedImage.TYPE_INT_RGB);
+		for(int j = 0; j < b.getHeight(); j++){
+			for(int i = 0; i < b.getWidth(); i++){
+				total.setRGB(i, j, new Color(b.getRGB(i, j)).getBlue());
+			}
+		}
+		return total;
 	}
 	public static BufferedImage createAwtImage(Mat mat) {
 
