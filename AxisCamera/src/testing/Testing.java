@@ -12,6 +12,7 @@ import camera.AxisCamera.Resolution;
 public class Testing {
 
 	public static void main(String[] args) throws Exception {
+		double seconds = 5;
 		AxisCamera camera = new AxisCamera("169.254.148.78");
 		System.out.println(camera.supportedImageFormats());
 		System.out.println(camera.supportedResolutions());
@@ -23,19 +24,19 @@ public class Testing {
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Timer timer = new Timer();
-		while (timer.getElapsedTime() < 5 * 1000) {
+		while (timer.getElapsedTime() < seconds * 1000) {
 			icon.setImage(camera.getBufferedImage());
 			frame.repaint();
 		}
 		camera.setResolution(Resolution.r320x240);
 		timer.reset();
-		while (timer.getElapsedTime() < 5 * 1000) {
+		while (timer.getElapsedTime() < seconds * 1000) {
 			icon.setImage(camera.getBufferedImage());
 			frame.repaint();
 		}
 		camera.setCompression(100);
 		timer.reset();
-		while (timer.getElapsedTime() < 5 * 1000) {
+		while (timer.getElapsedTime() < seconds * 1000) {
 			icon.setImage(camera.getBufferedImage());
 			frame.repaint();
 		}

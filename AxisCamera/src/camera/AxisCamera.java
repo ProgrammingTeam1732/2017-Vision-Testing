@@ -168,8 +168,8 @@ public class AxisCamera {
 		con.setRequestProperty("Authorization", basicAuth);
 
 		int responseCode = con.getResponseCode();
-		System.out.printf("Sending 'GET' request to URL : %s%n", url.toString());
-		System.out.printf("Response Code : %d%n", responseCode);
+		System.out.println("Sending 'GET' request to URL : " + url.toString());
+		System.out.println("Response Code : " + responseCode);
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		String inputLine;
