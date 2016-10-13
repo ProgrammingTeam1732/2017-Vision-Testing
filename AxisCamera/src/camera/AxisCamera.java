@@ -17,26 +17,6 @@ public class AxisCamera {
 	private URL cgiURL;
 	private URL mediaURL;
 
-	// A note about the URL(URL context, String spec) constructor:
-	// This will be easier to show than explain
-	// mainURL = new URL("http://" + ip); // mainURL is "http://ip"
-	// cgiURL = new URL(mainURL, "/axis-cgi"); // cgiURL is "http://ip/axis-cgi"
-	// imageURL = relativeURL(cgiURL, "/jpg/image.cgi"); // imageURL is
-	// "http://ip/jpg/image.cgi"
-	// TLDR: making a relative URL from a relative URL using the URL class's
-	// constructor doesn't work
-	// I know that seems strange, but it is the way it works, so if you want to
-	// do this instead use the relative URL method
-
-	// Another note about any URL constructor:
-	// It seems that it will remove any forward slashes at the end, like this:
-	// URL url = new URL("http://" + ip + "/"); // url is "http://ip"
-	// Do not try to shorten the code by adding backslashes at the end of a URL
-	// (making it shorter by saving backslashes in future relative URLs), they
-	// will be removed
-
-	private Resolution resolution = Resolution.r800x600;
-
 	public enum Resolution {
 		r800x600("800x600"), r640x480("640x480"), r480x360("480x360"), r320x240("320x240"), r640x360(
 				"640x360"), r640x400("640x400"), r352x240("352x240");
@@ -48,11 +28,20 @@ public class AxisCamera {
 		}
 	}
 
+	private Resolution resolution = Resolution.r800x600;
+
 	private int compression = 30;
 	private int fps = 10;
 
-	private static final String user = "root";
-	private static final String pass = "root";
+	public enum WhiteBalance {
+		auto, hold, fixed_outdoor, fixed_outdoor1, fixed_outdoor2, fixed_indoor, fixed_fluor, fixed_fluor1, fixed_fluor2;
+		public static final String property = "root.ImageSource.I0.Sensor.WhiteBalance";
+	}
+
+	private WhiteBalance whiteBalance;
+
+	private String USER = "root";
+	private String PASS = "root";
 
 	public AxisCamera(String ip) throws MalformedURLException {
 		mainURL = new URL("http://" + ip);
@@ -115,7 +104,15 @@ public class AxisCamera {
 	}
 
 	public int getFPS() {
-		return fps;
+		return fps * 1;
+	}
+
+	public WhiteBalance getWhiteBalance() {
+		return whiteBalance;
+	}
+
+	public String setWhiteBalance(WhiteBalance whiteBalance) {
+		return setParameter("root.ImageSource.I0.Sensor.WhiteBalance", whiteBalance.toString());
 	}
 
 	// We should not directly get the jpg for image processing, it is much
@@ -129,51 +126,56 @@ public class AxisCamera {
 		return null;
 	}
 
-	public String VAPIXVersion() {
+	public String listParameters(String group) {
 		try {
-			return sendGet(relativeURL(cgiURL, "/param.cgi?action=list&group=Properties.API.HTTP.Version"));
+			return sendGet(relativeURL(cgiURL, "/admin/param.cgi?action=list&group=" + group));
 		} catch (IOException e) {
-			System.err.println("Could not check VAPIX version, sendGet() method failed");
+			System.err.println("Could not check parameters, sendGet() method failed");
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	public String supportedResolutions() {
+	public String setParameter(String parameter, String value) {
 		try {
-			return sendGet(relativeURL(cgiURL, "/param.cgi?action=list&group=Properties.Image.Resolution"));
+			return sendGet(relativeURL(cgiURL, "/admin/param.cgi?action=update&" + parameter + "=" + value));
 		} catch (IOException e) {
-			System.err.println("Could not check supported resolutions, sendGet() method failed");
+			System.err.println("Could not check parameters, sendGet() method failed");
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	public String supportedImageFormats() {
-		try {
-			return sendGet(relativeURL(cgiURL, "/param.cgi?action=list&group=Properties.Image.Format"));
-		} catch (IOException e) {
-			System.err.println("Could not check supported image formats, sendGet() method failed");
-			e.printStackTrace();
-		}
-		return null;
+	public String getUSER() {
+		return USER;
 	}
 
-	public String sendGet(URL url) throws IOException {
+	public void setUSER(String uSER) {
+		USER = uSER;
+	}
+
+	public String getPASS() {
+		return PASS;
+	}
+
+	public void setPASS(String pASS) {
+		PASS = pASS;
+	}
+
+	private String sendGet(URL url) throws IOException {
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
 		con.setRequestMethod("GET");
-		String userCredentials = user + ":" + pass;
+		String userCredentials = USER + ":" + PASS;
 		String basicAuth = "Basic " + new String(Base64.getEncoder().encodeToString(userCredentials.getBytes()));
 		con.setRequestProperty("Authorization", basicAuth);
 
-		int responseCode = con.getResponseCode();
-		System.out.println("Sending 'GET' request to URL : " + url.toString());
-		System.out.println("Response Code : " + responseCode);
+		StringBuffer response = new StringBuffer();
+		response.append(String.format("Sending 'GET' request to URL : %s%n", url.toString()));
+		response.append(String.format("Response Code : %s%n", con.getResponseCode()));
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		String inputLine;
-		StringBuffer response = new StringBuffer();
 
 		while ((inputLine = in.readLine()) != null) {
 			response.append(inputLine);
