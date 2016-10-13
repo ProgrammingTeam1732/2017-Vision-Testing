@@ -16,7 +16,6 @@ public class LiveVideoFeed {
 
 	public static void main(String[] args) {
 		String opencvpath = System.getProperty("user.dir") + "\\files\\";
-		String libPath = System.getProperty("java.library.path");
 		System.load(opencvpath + Core.NATIVE_LIBRARY_NAME + ".dll");
 		VideoCapture camera = new VideoCapture(0);
 		Mat mat = new Mat();
