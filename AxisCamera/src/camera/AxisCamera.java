@@ -115,7 +115,7 @@ public class AxisCamera {
 	}
 
 	public int getFPS() {
-		return fps * 1;
+		return fps;
 	}
 
 	// We should not directly get the jpg for image processing, it is much
