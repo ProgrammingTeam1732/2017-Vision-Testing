@@ -14,6 +14,7 @@ public class Testing {
 	public static void main(String[] args) throws Exception {
 		double seconds = 5;
 		AxisCamera camera = new AxisCamera("169.254.148.78");
+		camera.setFPS(30);
 		System.out.println(camera.supportedImageFormats());
 		System.out.println(camera.supportedResolutions());
 		ImageIcon icon = new ImageIcon(camera.getBufferedImage());
