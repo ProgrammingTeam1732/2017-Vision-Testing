@@ -3,9 +3,6 @@ package opencv;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 
@@ -15,7 +12,7 @@ import javax.swing.JLabel;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.videoio.VideoCapture;
+import org.opencv.highgui.VideoCapture;
 
 public class LiveVideoFeed {
 
@@ -23,21 +20,23 @@ public class LiveVideoFeed {
 		boolean blue = false;
 		String opencvpath = System.getProperty("user.dir") + "\\files\\";
 		System.load(opencvpath + Core.NATIVE_LIBRARY_NAME + ".dll");
-		VideoCapture camera = new VideoCapture(0);
-		Mat mat = new Mat();
-		camera.read(mat);
-		if (!camera.isOpened()) {
+		VideoCapture camera = new VideoCapture();
+		if (!camera.open("http://169.254.148.78/mjpg/video.mjpg")) {
 			System.out.println("Error");
 		}
+		Mat mat = new Mat();
+		camera.read(mat);
+		// System.out.println(camera.grab());
+		// System.out.println(camera.retrieve(mat));
 		JFrame frame = new JFrame("IMG");
-//		frame.addWindowListener( new WindowAdapter() {
-//             @Override
-//             public void windowClosing(WindowEvent we) {
-//                System.exit(1);
-//             }
-//        });
+		// frame.addWindowListener( new WindowAdapter() {
+		// @Override
+		// public void windowClosing(WindowEvent we) {
+		// System.exit(1);
+		// }
+		// });
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		frame.setResizable(false);
 		frame.setLocation(200, 100);
 		BufferedImage image = createAwtImage(mat);
@@ -56,7 +55,7 @@ public class LiveVideoFeed {
 				blue(image);
 			icon.setImage(image);
 			frame.repaint();
-			//frame.getContentPane().add(new JLabel("", icon, JLabel.CENTER));
+			// frame.getContentPane().add(new JLabel("", icon, JLabel.CENTER));
 			// rounding to make it easier to read the fps on the jframe
 			frame.setTitle("IMG " + Math.round((System.currentTimeMillis() - start) / 5.0) * 5);
 			frame.validate();
