@@ -87,6 +87,7 @@ public class AxisCamera {
 		return relativeURL(cgiURL, "/jpg/image.cgi" + getImageArguements());
 	}
 
+	// http://169.254.148.78/mjpg/video.mjpg
 	public URL getMjpgURL() {
 		return relativeURL(cgiURL, String.format("/mjpg/video.cgi%s&fps=%d", getImageArguements(), fps));
 	}
