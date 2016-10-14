@@ -111,6 +111,7 @@ public class AxisCamera {
 		// sets to 0 if less than 0, if greater than 0 checks if greater than
 		// 100 then sets to 100, otherwise sets to aCompression
 		compression = aCompression < 0 ? 0 : aCompression > 100 ? 100 : aCompression;
+
 	}
 
 	public int getCompression() {
@@ -123,7 +124,7 @@ public class AxisCamera {
 	}
 
 	public int getFPS() {
-		return fps * 1;
+		return fps;
 	}
 
 	public WhiteBalance getWhiteBalance() {
@@ -177,7 +178,7 @@ public class AxisCamera {
 
 	public String setSharpness(int aSharpness) {
 		sharpness = aSharpness < 0 ? 0 : aSharpness > 100 ? 100 : aSharpness;
-		return setParameter("root.ImageSource.I0.Sensor.ExposureValue", Integer.toString(sharpness));
+		return setParameter(SHARPNESS_PROPERTY, Integer.toString(sharpness));
 	}
 
 	// We should not directly get the jpg for image processing, it is much
@@ -216,16 +217,16 @@ public class AxisCamera {
 		return USER;
 	}
 
-	public void setUSER(String uSER) {
-		USER = uSER;
+	public void setUSER(String aUSER) {
+		USER = aUSER;
 	}
 
 	public String getPASS() {
 		return PASS;
 	}
 
-	public void setPASS(String pASS) {
-		PASS = pASS;
+	public void setPASS(String aPASS) {
+		PASS = aPASS;
 	}
 
 	private String sendGet(URL url) throws IOException {
