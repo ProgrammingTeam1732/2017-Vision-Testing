@@ -12,7 +12,7 @@ import javax.swing.JLabel;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.highgui.VideoCapture;
+import org.opencv.videoio.VideoCapture;
 
 public class LiveVideoFeed {
 
@@ -20,11 +20,11 @@ public class LiveVideoFeed {
 		boolean blue = false;
 		String opencvpath = System.getProperty("user.dir") + "\\files\\";
 		System.load(opencvpath + Core.NATIVE_LIBRARY_NAME + ".dll");
-		System.load(opencvpath + "opencv_ffmpeg2413_64.dll");
-		VideoCapture camera = new VideoCapture();
+		//System.load(opencvpath + "opencv_ffmpeg2413_64.dll");
+		VideoCapture camera = new VideoCapture(0);
 		// http://169.254.148.78/axis-media/media.amp
 		// http://169.254.148.78/mjpg/video.mjpg
-		if (!camera.open("http://169.254.148.78/mjpg/video.mjpg")) {
+		if (!camera.isOpened(/*"http://169.254.148.78/mjpg/video.mjpg"*/)) {
 			System.out.println("Error");
 		}
 		Mat mat = new Mat();
@@ -49,18 +49,21 @@ public class LiveVideoFeed {
 		frame.getContentPane().add(label1);
 		frame.validate();
 		frame.setVisible(true);
+		MatImage m = new MatImage(mat);
 		long start = System.currentTimeMillis();
 		while (true) {
 			start = System.currentTimeMillis();
 			camera.read(mat);
-			image = new MatImage(mat).getBufferedImage();
-			if (blue)
-				blue(image);
+			m.updateMat(mat);
+			m.pencilDrawing(5);
+			image = m.getBufferedImage();
+			//image = new MatImage(mat).getBufferedImage();
+			if (blue) blue(image);
 			icon.setImage(image);
 			frame.repaint();
 			// frame.getContentPane().add(new JLabel("", icon, JLabel.CENTER));
 			// rounding to make it easier to read the fps on the jframe
-			frame.setTitle("IMG " + Math.round((System.currentTimeMillis() - start) / 5.0) * 5);
+			frame.setTitle("IMG framerate: " + Math.round((1000.0 / (System.currentTimeMillis() - start))/5) * 5 + "fps");
 			frame.validate();
 		}
 

@@ -13,14 +13,24 @@ public class RGBPixel {
 		green = c.getGreen();
 	}
 
-	public RGBPixel(int red, int blue, int green) {
+	public RGBPixel(int red, int green, int blue) {
 		this.red = red;
 		this.blue = blue;
 		this.green = green;
 	}
-
-	public double[] getArray() {
-		return new double[] { red, blue, green };
+	
+	public void setPixel(int red, int green, int blue){
+		this.red = red;
+		this.blue = blue;
+		this.green = green;
+	}
+	public void setPixel(Color c){
+		red = c.getRed();
+		blue = c.getBlue();
+		green = c.getGreen();
+	}
+	public int[] getPixel() {
+		return new int[] { red, blue, green };
 	}
 
 	public int getRGB() {
