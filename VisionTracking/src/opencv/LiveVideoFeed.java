@@ -12,14 +12,13 @@ import javax.swing.JLabel;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-<<<<<<< HEAD
+
 import org.opencv.videoio.VideoCapture;
-=======
+
 // when using 2.4.13:
 import org.opencv.highgui.VideoCapture;
 // when using 3.1.0:
 //import org.opencv.videoio.VideoCapture;
->>>>>>> branch 'OpenCV' of https://github.com/ProgrammingTeam1732/2017-Vision-Testing.git
 
 public class LiveVideoFeed {
 
@@ -27,23 +26,23 @@ public class LiveVideoFeed {
 		boolean blue = false;
 		String opencvpath = System.getProperty("user.dir") + "\\files\\";
 		System.load(opencvpath + Core.NATIVE_LIBRARY_NAME + ".dll");
-<<<<<<< HEAD
+
 		//System.load(opencvpath + "opencv_ffmpeg2413_64.dll");
 		VideoCapture camera = new VideoCapture(0);
-=======
+
 		if (Core.VERSION.equals("2.4.13.0"))
 			System.load(opencvpath + "opencv_ffmpeg2413_64.dll");
 		else
 			System.load(opencvpath + "opencv_ffmpeg310_64.dll");
 		VideoCapture camera = new VideoCapture();
->>>>>>> branch 'OpenCV' of https://github.com/ProgrammingTeam1732/2017-Vision-Testing.git
+
 		// http://169.254.148.78/axis-media/media.amp
 		// http://169.254.148.78/mjpg/video.mjpg
-<<<<<<< HEAD
+
 		if (!camera.isOpened(/*"http://169.254.148.78/mjpg/video.mjpg"*/)) {
-=======
+
 		if (!camera.open(0)) { // "http://169.254.148.78/mjpg/video.mjpg")) {
->>>>>>> branch 'OpenCV' of https://github.com/ProgrammingTeam1732/2017-Vision-Testing.git
+
 			System.out.println("Error");
 		}
 		Mat mat = new Mat();
