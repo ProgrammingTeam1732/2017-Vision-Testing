@@ -3,6 +3,9 @@ package opencv;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 
@@ -27,8 +30,14 @@ public class LiveVideoFeed {
 			System.out.println("Error");
 		}
 		JFrame frame = new JFrame("IMG");
+//		frame.addWindowListener( new WindowAdapter() {
+//             @Override
+//             public void windowClosing(WindowEvent we) {
+//                System.exit(1);
+//             }
+//        });
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		
 		frame.setResizable(false);
 		frame.setLocation(200, 100);
 		BufferedImage image = createAwtImage(mat);
@@ -42,12 +51,12 @@ public class LiveVideoFeed {
 		while (true) {
 			start = System.currentTimeMillis();
 			camera.read(mat);
+			image = new MatImage(mat).getBufferedImage();
 			if (blue)
-				image = blue(createAwtImage(mat));
-			else
-				image = createAwtImage(mat);
+				blue(image);
 			icon.setImage(image);
-			frame.getContentPane().add(new JLabel("", icon, JLabel.CENTER));
+			frame.repaint();
+			//frame.getContentPane().add(new JLabel("", icon, JLabel.CENTER));
 			// rounding to make it easier to read the fps on the jframe
 			frame.setTitle("IMG " + Math.round((System.currentTimeMillis() - start) / 5.0) * 5);
 			frame.validate();
@@ -55,14 +64,12 @@ public class LiveVideoFeed {
 
 	}
 
-	public static BufferedImage blue(BufferedImage b) {
-		BufferedImage total = new BufferedImage(b.getWidth(), b.getHeight(), BufferedImage.TYPE_INT_RGB);
+	public static void blue(BufferedImage b) {
 		for (int j = 0; j < b.getHeight(); j++) {
 			for (int i = 0; i < b.getWidth(); i++) {
-				total.setRGB(i, j, new Color(b.getRGB(i, j)).getBlue());
+				b.setRGB(i, j, new Color(b.getRGB(i, j)).getBlue());
 			}
 		}
-		return total;
 	}
 
 	public static BufferedImage createAwtImage(Mat mat) {
