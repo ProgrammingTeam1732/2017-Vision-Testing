@@ -16,9 +16,9 @@ import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 
 // when using 2.4.13:
-import org.opencv.highgui.VideoCapture;
+//import org.opencv.highgui.VideoCapture;
 // when using 3.1.0:
-//import org.opencv.videoio.VideoCapture;
+import org.opencv.videoio.VideoCapture;
 
 public class LiveVideoFeed {
 
@@ -34,12 +34,12 @@ public class LiveVideoFeed {
 			System.load(opencvpath + "opencv_ffmpeg2413_64.dll");
 		else
 			System.load(opencvpath + "opencv_ffmpeg310_64.dll");
-		VideoCapture camera = new VideoCapture();
+		//VideoCapture camera = new VideoCapture();
 
 		// http://169.254.148.78/axis-media/media.amp
 		// http://169.254.148.78/mjpg/video.mjpg
 
-		if (!camera.isOpened(/*"http://169.254.148.78/mjpg/video.mjpg"*/)) {
+		//if (!camera.isOpened(/*"http://169.254.148.78/mjpg/video.mjpg"*/)) {
 
 		if (!camera.open(0)) { // "http://169.254.148.78/mjpg/video.mjpg")) {
 
@@ -58,24 +58,23 @@ public class LiveVideoFeed {
 
 		frame.setResizable(false);
 		frame.setLocation(200, 100);
-		BufferedImage image = createAwtImage(mat);
-		ImageIcon icon = new ImageIcon(image);
+		MatImage image = new MatImage(mat);
+		ImageIcon icon = new ImageIcon(createAwtImage(mat));
 		frame.setSize(icon.getIconWidth() + 100, icon.getIconHeight() + 100);
 		JLabel label1 = new JLabel("", icon, JLabel.CENTER);
 		frame.getContentPane().add(label1);
 		frame.validate();
 		frame.setVisible(true);
-		MatImage m = new MatImage(mat);
 		long start = System.currentTimeMillis();
 		while (true) {
 			start = System.currentTimeMillis();
 			camera.read(mat);
-			m.updateMat(mat);
-			m.pencilDrawing(5);
-			image = m.getBufferedImage();
+			image.updateMat(mat);
+			image.pencilDrawing(5);
+		
 			//image = new MatImage(mat).getBufferedImage();
-			if (blue) blue(image);
-			icon.setImage(image);
+			//if (blue) blue(image);
+			icon.setImage(image.getBufferedImage());
 			frame.repaint();
 			// frame.getContentPane().add(new JLabel("", icon, JLabel.CENTER));
 			// rounding to make it easier to read the fps on the jframe

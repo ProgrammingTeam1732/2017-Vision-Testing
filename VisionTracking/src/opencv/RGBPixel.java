@@ -65,3 +65,4 @@ public class RGBPixel {
 	public void setGreen(int green) {
 		this.green = green;
 	}
+}

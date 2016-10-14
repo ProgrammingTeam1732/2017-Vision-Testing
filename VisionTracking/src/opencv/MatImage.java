@@ -1,6 +1,7 @@
 
 package opencv;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import org.opencv.core.Mat;
@@ -106,6 +107,32 @@ public class MatImage {
 			}
 		}
 	}
+	public void pencilDrawing(int tolerance, Color pencil, Color background){
+		for(int row = 0; row < image.length-1; row++){
+			for(int col = 0; col < image[0].length-1; col++){
+				if(image[row][col].getRed() - image[row + 1][col].getRed() >= tolerance)image[row][col].setPixel(pencil);
+				else if(image[row][col].getGreen() - image[row + 1][col].getGreen() >= tolerance)image[row][col].setPixel(pencil);
+				else if(image[row][col].getBlue() - image[row + 1][col].getBlue() >= tolerance)image[row][col].setPixel(pencil);
+				else if(image[row][col].getRed() - image[row][col+1].getRed() >= tolerance)image[row][col].setPixel(pencil);
+				else if(image[row][col].getGreen() - image[row][col + 1].getGreen() >= tolerance)image[row][col].setPixel(pencil);
+				else if(image[row][col].getBlue() - image[row][col + 1].getBlue() >= tolerance)image[row][col].setPixel(pencil);
+				else image[row][col].setPixel(background);	
+			}
+		}
+	}
+	public void increseEdgeSharpness(int tolerance){
+		for(int row = 0; row < image.length-1; row++){
+			for(int col = 0; col < image[0].length-1; col++){
+				if(image[row][col].getRed() - image[row + 1][col].getRed() >= tolerance)image[row][col].setPixel(0, 0, 0);
+				else if(image[row][col].getGreen() - image[row + 1][col].getGreen() >= tolerance)image[row][col].setPixel(0, 0, 0);
+				else if(image[row][col].getBlue() - image[row + 1][col].getBlue() >= tolerance)image[row][col].setPixel(0, 0, 0);
+				else if(image[row][col].getRed() - image[row][col+1].getRed() >= tolerance)image[row][col].setPixel(0, 0, 0);
+				else if(image[row][col].getGreen() - image[row][col + 1].getGreen() >= tolerance)image[row][col].setPixel(0, 0, 0);
+				else if(image[row][col].getBlue() - image[row][col + 1].getBlue() >= tolerance)image[row][col].setPixel(0, 0, 0);
+				//else image[row][col].setPixel(255, 255, 255);	
+			}
+		}
+	}
 	public void keepRed(){
 		for(int row = 0; row < image.length-1; row++){
 			for(int col = 0; col < image[0].length; col++){
@@ -191,3 +218,4 @@ public class MatImage {
 			}
 		}
 	}
+}
