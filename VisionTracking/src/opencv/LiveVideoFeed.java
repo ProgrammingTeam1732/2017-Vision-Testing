@@ -20,6 +20,7 @@ public class LiveVideoFeed {
 		boolean blue = false;
 		String opencvpath = System.getProperty("user.dir") + "\\files\\";
 		System.load(opencvpath + Core.NATIVE_LIBRARY_NAME + ".dll");
+		System.load(opencvpath + "opencv_ffmpeg2413_64.dll");
 		VideoCapture camera = new VideoCapture();
 		// http://169.254.148.78/axis-media/media.amp
 		// http://169.254.148.78/mjpg/video.mjpg
