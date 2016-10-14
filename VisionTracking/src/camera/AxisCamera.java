@@ -13,9 +13,9 @@ import javax.imageio.ImageIO;
 
 public class AxisCamera {
 
-	private URL mainURL;
-	private URL cgiURL;
-	private URL mediaURL;
+	private String mainURL;
+	private String cgiURL;
+	private String mediaURL;
 
 	// The following settings are communicated to the camera when getting the
 	// image/stream or whatever
@@ -62,18 +62,19 @@ public class AxisCamera {
 	private String USER = "root";
 	private String PASS = "root";
 
-	public AxisCamera(String ip) throws MalformedURLException {
-		mainURL = new URL("http://" + ip);
-		cgiURL = relativeURL(mainURL, "/axis-cgi");
-		mediaURL = relativeURL(mainURL, "/axis-media");
+	public AxisCamera(String ip) {
+		mainURL = "http://" + ip;
+		cgiURL = mainURL + "/axis-cgi";
+		mediaURL = mainURL + "/axis-media";
 	}
 
-	private URL relativeURL(URL base, String ending) {
+	private URL relativeURL(String start, String end) {
 		try {
-			return new URL(base.toString() + ending);
+			return new URL(start + end);
 		} catch (MalformedURLException e) {
-			System.err.println("Cannot form relative URL, programmer screwed up the spelling of the ending");
-			System.err.println("Ending: " + ending);
+			System.err.println("Cannot form relative URL, spelling screwed up");
+			System.err.println("Start: " + start);
+			System.err.println("Ending: " + end);
 			e.printStackTrace();
 			return null;
 		}
