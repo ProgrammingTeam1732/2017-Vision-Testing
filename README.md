@@ -16,3 +16,5 @@ http://www.axis.com/files/manuals/HTTP_API_VAPIX_2.pdf
 
 Install openCV:
 http://docs.opencv.org/2.4/doc/tutorials/introduction/java_eclipse/java_eclipse.html
+
+Install the latest stable version of openCV
