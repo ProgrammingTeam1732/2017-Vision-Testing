@@ -4,23 +4,23 @@ import java.awt.Color;
 
 public class RGBPixel {
 	private int red;
-	private int blue;
 	private int green;
+	private int blue;
 
 	public RGBPixel(Color c) {
 		red = c.getRed();
-		blue = c.getBlue();
 		green = c.getGreen();
+		blue = c.getBlue();
 	}
 
-	public RGBPixel(int red, int blue, int green) {
+	public RGBPixel(int red, int green, int blue) {
 		this.red = red;
-		this.blue = blue;
 		this.green = green;
+		this.blue = blue;
 	}
 
 	public double[] getArray() {
-		return new double[] { red, blue, green };
+		return new double[] { red, green, blue };
 	}
 
 	public int getRGB() {

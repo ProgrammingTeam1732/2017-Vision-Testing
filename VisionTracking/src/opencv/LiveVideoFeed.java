@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.highgui.VideoCapture;
+//import org.opencv.videoio.VideoCapture;
 
 public class LiveVideoFeed {
 
@@ -20,17 +21,18 @@ public class LiveVideoFeed {
 		boolean blue = false;
 		String opencvpath = System.getProperty("user.dir") + "\\files\\";
 		System.load(opencvpath + Core.NATIVE_LIBRARY_NAME + ".dll");
-		System.load(opencvpath + "opencv_ffmpeg2413_64.dll");
+		if (Core.VERSION.equals("2.4.13.0"))
+			System.load(opencvpath + "opencv_ffmpeg2413_64.dll");
+		else
+			System.load(opencvpath + "opencv_ffmpeg310_64.dll");
 		VideoCapture camera = new VideoCapture();
 		// http://169.254.148.78/axis-media/media.amp
 		// http://169.254.148.78/mjpg/video.mjpg
-		if (!camera.open("http://169.254.148.78/mjpg/video.mjpg")) {
+		if (!camera.open(0)) { // "http://169.254.148.78/mjpg/video.mjpg")) {
 			System.out.println("Error");
 		}
 		Mat mat = new Mat();
 		camera.read(mat);
-		// System.out.println(camera.grab());
-		// System.out.println(camera.retrieve(mat));
 		JFrame frame = new JFrame("IMG");
 		// frame.addWindowListener( new WindowAdapter() {
 		// @Override
