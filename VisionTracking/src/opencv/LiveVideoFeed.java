@@ -12,7 +12,9 @@ import javax.swing.JLabel;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+// when using 2.4.13:
 import org.opencv.highgui.VideoCapture;
+// when using 3.1.0:
 //import org.opencv.videoio.VideoCapture;
 
 public class LiveVideoFeed {
