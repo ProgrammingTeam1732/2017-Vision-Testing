@@ -9,15 +9,8 @@ import org.opencv.core.Mat;
 public class MatImage {
 	private RGBPixel[][] image;
 	private BufferedImage total;
-
 	public MatImage(Mat image) {
 		double[] pixel = new double[3];
-		/*
-		 * this.image = new Pixel[image.height()][image.width()]; for (int i =
-		 * 0; i < image.height(); i++) { for (int j = 0; j < image.width(); j++)
-		 * { pixel = image.get(i, j); this.image[i][j] = new Pixel((int)
-		 * pixel[2], (int) pixel[0], (int) pixel[1]); } }
-		 */
 		this.image = new RGBPixel[image.width()][image.height()];
 		for (int i = 0; i < image.height(); i++) {
 			for (int j = 1; j <= image.width(); j++) {

@@ -29,7 +29,7 @@ public class LiveVideoFeed {
 
 		//System.load(opencvpath + "opencv_ffmpeg2413_64.dll");
 		VideoCapture camera = new VideoCapture(0);
-
+		
 		if (Core.VERSION.equals("2.4.13.0"))
 			System.load(opencvpath + "opencv_ffmpeg2413_64.dll");
 		else
@@ -59,7 +59,7 @@ public class LiveVideoFeed {
 		frame.setResizable(false);
 		frame.setLocation(200, 100);
 		MatImage image = new MatImage(mat);
-		ImageIcon icon = new ImageIcon(createAwtImage(mat));
+		ImageIcon icon = new ImageIcon(image.getBufferedImage());
 		frame.setSize(icon.getIconWidth() + 100, icon.getIconHeight() + 100);
 		JLabel label1 = new JLabel("", icon, JLabel.CENTER);
 		frame.getContentPane().add(label1);
@@ -70,28 +70,18 @@ public class LiveVideoFeed {
 			start = System.currentTimeMillis();
 			camera.read(mat);
 			image.updateMat(mat);
-			image.pencilDrawing(5);
-		
+			image.negate();
 			//image = new MatImage(mat).getBufferedImage();
 			//if (blue) blue(image);
 			icon.setImage(image.getBufferedImage());
+			frame.setTitle("IMG framerate: " + Math.round((1000.0 / (System.currentTimeMillis() - start))/5) * 5 + "fps");
 			frame.repaint();
 			// frame.getContentPane().add(new JLabel("", icon, JLabel.CENTER));
 			// rounding to make it easier to read the fps on the jframe
-			frame.setTitle("IMG framerate: " + Math.round((1000.0 / (System.currentTimeMillis() - start))/5) * 5 + "fps");
-			frame.validate();
+			//frame.validate();
 		}
 
 	}
-
-	public static void blue(BufferedImage b) {
-		for (int j = 0; j < b.getHeight(); j++) {
-			for (int i = 0; i < b.getWidth(); i++) {
-				b.setRGB(i, j, new Color(b.getRGB(i, j)).getBlue());
-			}
-		}
-	}
-
 	public static BufferedImage createAwtImage(Mat mat) {
 
 		int type = 0;
