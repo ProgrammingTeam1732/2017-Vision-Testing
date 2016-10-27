@@ -1,8 +1,12 @@
 package opencv;
 
+import java.awt.Color;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -39,7 +43,12 @@ public class LiveVideoFeed {
 		frame.setLocation(200, 100);
 		frame.setSize(icon.getIconWidth(), icon.getIconHeight());
 		JLabel label1 = new JLabel("", icon, JLabel.CENTER);
-		frame.add(label1);
+		JSlider tol = new JSlider(0, 255);
+		JPanel panel = new JPanel();
+		panel.add(label1);
+		panel.add(tol);
+		frame.add(panel);
+		frame.setSize(frame.getWidth(), frame.getHeight()+63);
 		frame.validate();
 		frame.setVisible(true);
 
@@ -51,8 +60,7 @@ public class LiveVideoFeed {
 			start = System.currentTimeMillis();
 			camera.read(mat);
 			matImage.updatePixelArray(mat);
-			matImage.mirrorHorizontal(true);
-			matImage.pencilDrawing(5);
+			matImage.highlightCustom(new Color(255, 128, 0), tol.getValue());
 			icon.setImage(matImage.getBufferedImage());
 			frame.setTitle("FPS: " + (FPS + prevFPS + beforePrevFPS) / 3);
 			frame.repaint();
