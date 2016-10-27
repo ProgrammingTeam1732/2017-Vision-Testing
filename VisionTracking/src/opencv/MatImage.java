@@ -293,4 +293,16 @@ public class MatImage {
 			}
 		}
 	}
+	public void highlightCustom(Color c, int tolerance) {
+		for (int row = 0; row < pixelArray.length - 1; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				if (pixelArray[row][col].getDistanceSquared(c) < tolerance * tolerance) {
+					// pixelArray[row][col].setWhite();
+					if (row % 2 == 0)
+						pixelArray[row][col].setPixel(c);
+				}
+				// else pixelArray[row][col].setBlack();
+			}
+		}
+	}
 }

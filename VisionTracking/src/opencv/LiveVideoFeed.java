@@ -6,9 +6,10 @@ import javax.swing.JLabel;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.highgui.VideoCapture;
+import org.opencv.videoio.VideoCapture;
 
 public class LiveVideoFeed {
+
 
 	public static void main(String[] args) {
 
