@@ -23,7 +23,6 @@ import org.opencv.videoio.VideoCapture;
 public class LiveVideoFeed {
 
 	public static void main(String[] args) {
-		boolean blue = false;
 		String opencvpath = System.getProperty("user.dir") + "\\files\\";
 		System.load(opencvpath + Core.NATIVE_LIBRARY_NAME + ".dll");
 
@@ -70,7 +69,7 @@ public class LiveVideoFeed {
 			start = System.currentTimeMillis();
 			camera.read(mat);
 			image.updateMat(mat);
-			image.negate();
+			image.highlightBlue(50);
 			//image = new MatImage(mat).getBufferedImage();
 			//if (blue) blue(image);
 			icon.setImage(image.getBufferedImage());

@@ -38,6 +38,7 @@ public class MatImage {
 		}
 		return total;
 	}
+	
 	public void negate(){
 		for(int row = 0; row < image.length; row++){
 			for(int col = 0; col < image[0].length; col++){
@@ -47,6 +48,7 @@ public class MatImage {
 			}
 		}
 	}
+	
 	public void mirrorVertical(boolean negative){
 		if(!negative){
 			for(int row = 0; row < image.length; row++){
@@ -87,6 +89,7 @@ public class MatImage {
 			}
 		}
 	}
+	
 	public void pencilDrawing(int tolerance){
 		for(int row = 0; row < image.length-1; row++){
 			for(int col = 0; col < image[0].length-1; col++){
@@ -126,6 +129,7 @@ public class MatImage {
 			}
 		}
 	}
+	
 	public void keepRed(){
 		for(int row = 0; row < image.length-1; row++){
 			for(int col = 0; col < image[0].length; col++){
@@ -147,6 +151,7 @@ public class MatImage {
 			}
 		}
 	}
+	
 	public void grayscale(){
 		int avg = 0;
 		for(int row = 0; row < image.length-1; row++){
@@ -156,6 +161,7 @@ public class MatImage {
 			}
 		}
 	}
+	
 	public void zeroGreen(){
 		for(int row = 0; row < image.length-1; row++){
 			for(int col = 0; col < image[0].length; col++){
@@ -177,6 +183,7 @@ public class MatImage {
 			}
 		}
 	}
+	
 	public void switchBlueRedGreen(){
 		for(int row = 0; row < image.length-1; row++){
 			for(int col = 0; col < image[0].length; col++){
@@ -198,6 +205,7 @@ public class MatImage {
 			}
 		}
 	}
+	
 	public void sepia(){
 		for(int row = 0; row < image.length-1; row++){
 			for(int col = 0; col < image[0].length; col++){
@@ -208,6 +216,37 @@ public class MatImage {
 				if(green > 255) green = 255;
 				if(blue > 255) blue = 255;
 				image[row][col].setPixel((int) red, (int) green, (int) blue);
+			}
+		}
+	}
+	
+	public void highlightRed(int tolerance) {
+		for(int row = 0; row < image.length-1; row++){
+			for(int col = 0; col < image[0].length; col++){
+				if(image[row][col].getRed() - image[row][col].getBlue() > tolerance && image[row][col].getRed() - image[row][col].getGreen() > tolerance)
+					image[row][col].setPixel(Color.WHITE);
+				else
+					image[row][col].setPixel(Color.BLACK);
+			}
+		}
+	}
+	public void highlightGreen(int tolerance) {
+		for(int row = 0; row < image.length-1; row++){
+			for(int col = 0; col < image[0].length; col++){
+				if(image[row][col].getGreen() - image[row][col].getBlue() > tolerance && image[row][col].getGreen() - image[row][col].getBlue() > tolerance)
+					image[row][col].setPixel(Color.WHITE);
+				else
+					image[row][col].setPixel(Color.BLACK);
+			}
+		}
+	}
+	public void highlightBlue(int tolerance) {
+		for(int row = 0; row < image.length-1; row++){
+			for(int col = 0; col < image[0].length; col++){
+				if(image[row][col].getBlue() - image[row][col].getRed() > tolerance && image[row][col].getBlue() - image[row][col].getGreen() > tolerance)
+					image[row][col].setPixel(Color.WHITE);
+				else
+					image[row][col].setPixel(Color.BLACK);
 			}
 		}
 	}
