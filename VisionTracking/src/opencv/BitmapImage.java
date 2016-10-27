@@ -7,32 +7,27 @@ import org.opencv.core.Mat;
 public class BitmapImage {
 	private int[][] bitmap;
 	private BufferedImage bufferedImage;
-	int[] redRange;
-	int[] greenRange;
-	int[] blueRange;
+	private int[] targetColor;
+	private int tolerance;
 
-	public BitmapImage(Mat mat, int[] redRange, int[] greenRange, int[] blueRange) {
-		this.redRange = redRange;
-		this.greenRange = greenRange;
-		this.blueRange = blueRange;
-
+	public BitmapImage(Mat mat, int[] targetColor, int tolerance) {
+		this.tolerance = tolerance;
+		this.targetColor = targetColor;
 		bitmap = new int[mat.height()][mat.width()];
-
+		bufferedImage = new BufferedImage(mat.width(), mat.height(), BufferedImage.TYPE_INT_RGB);
 		for (int row = 0; row < mat.height(); row++) {
 			for (int col = 0; col < mat.width(); col++) {
-				double[] pixel = mat.get(row, col);
-				if (pixel[2] < redRange[0] || pixel[2] > redRange[1]) {
-					bitmap[row][col] = 0;
-				} else if (pixel[1] < greenRange[0] || pixel[1] > greenRange[1]) {
-					bitmap[row][col] = 0;
-				} else if (pixel[0] < blueRange[0] || pixel[0] > blueRange[1]) {
-					bitmap[row][col] = 0;
-				} else {
-					bitmap[row][col] = 1;
-				}
+				bitmap[row][col] = getDistance(targetColor, mat.get(row, col)) < tolerance ? 1 : 0;
 			}
 		}
-		bufferedImage = new BufferedImage(mat.width(), mat.height(), BufferedImage.TYPE_INT_RGB);
+	}
+
+	public void updateBitmap(Mat mat) {
+		for (int row = 0; row < mat.height(); row++) {
+			for (int col = 0; col < mat.width(); col++) {
+				bitmap[row][col] = getDistance(targetColor, mat.get(row, col)) < tolerance ? 1 : 0;
+			}
+		}
 	}
 
 	public BufferedImage getBufferedImage() {
@@ -44,59 +39,9 @@ public class BitmapImage {
 		return bufferedImage;
 	}
 
-	public void updateBitmap(Mat mat) {
-		for (int row = 0; row < mat.height(); row++) {
-			for (int col = 0; col < mat.width(); col++) {
-				double[] pixel = mat.get(row, col);
-				if (pixel[2] < redRange[0] || pixel[2] > redRange[1]) {
-					bitmap[row][col] = 0;
-				} else if (pixel[1] < greenRange[0] || pixel[1] > greenRange[1]) {
-					bitmap[row][col] = 0;
-				} else if (pixel[0] < blueRange[0] || pixel[0] > blueRange[1]) {
-					bitmap[row][col] = 0;
-				} else {
-					bitmap[row][col] = 1;
-				}
-			}
-		}
-	}
-
-	public void updateBitmapRed(Mat mat) {
-		for (int row = 0; row < mat.height(); row++) {
-			for (int col = 0; col < mat.width(); col++) {
-				double[] pixel = mat.get(row, col);
-				if (pixel[2] < redRange[0] || pixel[2] > redRange[1]) {
-					bitmap[row][col] = 0;
-				} else {
-					bitmap[row][col] = 1;
-				}
-			}
-		}
-	}
-
-	public void updateBitmapGreen(Mat mat) {
-		for (int row = 0; row < mat.height(); row++) {
-			for (int col = 0; col < mat.width(); col++) {
-				double[] pixel = mat.get(row, col);
-				if (pixel[1] < greenRange[0] || pixel[1] > greenRange[1]) {
-					bitmap[row][col] = 0;
-				} else {
-					bitmap[row][col] = 1;
-				}
-			}
-		}
-	}
-
-	public void updateBitmapBlue(Mat mat) {
-		for (int row = 0; row < mat.height(); row++) {
-			for (int col = 0; col < mat.width(); col++) {
-				double[] pixel = mat.get(row, col);
-				if (pixel[0] < blueRange[0] || pixel[0] > blueRange[1]) {
-					bitmap[row][col] = 0;
-				} else {
-					bitmap[row][col] = 1;
-				}
-			}
-		}
+	private double getDistance(int[] array1, double[] array2) {
+		return Math.sqrt(
+				(array1[0] - array2[2]) * (array1[0] - array2[2]) + (array1[1] - array2[1]) * (array1[1] - array2[1])
+						+ (array1[2] - array2[0]) * (array1[2] - array2[0]));
 	}
 }

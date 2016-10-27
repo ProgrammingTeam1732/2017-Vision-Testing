@@ -258,59 +258,6 @@ public class MatImage {
 		}
 	}
 
-	public void colorThreshold(int[] redRange, int[] greenRange, int[] blueRange) {
-		for (int row = 0; row < pixelArray.length; row++) {
-			for (int col = 0; col < pixelArray[0].length; col++) {
-				int[] pixel = pixelArray[row][col].getPixel();
-				if (pixel[0] < redRange[0] || pixel[0] > redRange[1] || pixel[1] < greenRange[0]
-						|| pixel[1] > greenRange[1] || pixel[2] < blueRange[0] || pixel[2] > blueRange[1]) {
-					pixelArray[row][col].setBlack();
-				} else {
-					pixelArray[row][col].setWhite();
-				}
-			}
-		}
-	}
-
-	public void colorThresholdRed(int[] redRange) {
-		for (int row = 0; row < pixelArray.length; row++) {
-			for (int col = 0; col < pixelArray[0].length; col++) {
-				int[] pixel = pixelArray[row][col].getPixel();
-				if (pixel[0] < redRange[0] || pixel[0] > redRange[1]) {
-					pixelArray[row][col].setBlack();
-				} else {
-					pixelArray[row][col].setWhite();
-				}
-			}
-		}
-	}
-
-	public void colorThresholdGreen(int[] greenRange) {
-		for (int row = 0; row < pixelArray.length; row++) {
-			for (int col = 0; col < pixelArray[0].length; col++) {
-				int[] pixel = pixelArray[row][col].getPixel();
-				if (pixel[1] < greenRange[0] || pixel[1] > greenRange[1]) {
-					pixelArray[row][col].setBlack();
-				} else {
-					pixelArray[row][col].setWhite();
-				}
-			}
-		}
-	}
-
-	public void colorThresholdBlue(int[] blueRange) {
-		for (int row = 0; row < pixelArray.length; row++) {
-			for (int col = 0; col < pixelArray[0].length; col++) {
-				int[] pixel = pixelArray[row][col].getPixel();
-				if (pixel[2] < blueRange[0] || pixel[2] > blueRange[1]) {
-					pixelArray[row][col].setBlack();
-				} else {
-					pixelArray[row][col].setWhite();
-				}
-			}
-		}
-	}
-
 	public void highlightRed(int tolerance) {
 		for (int row = 0; row < pixelArray.length; row++) {
 			for (int col = 0; col < pixelArray[0].length; col++) {
