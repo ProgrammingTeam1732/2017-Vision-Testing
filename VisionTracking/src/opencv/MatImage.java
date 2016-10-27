@@ -7,246 +7,342 @@ import java.awt.image.BufferedImage;
 import org.opencv.core.Mat;
 
 public class MatImage {
-	private RGBPixel[][] image;
-	private BufferedImage total;
-	public MatImage(Mat image) {
-		double[] pixel = new double[3];
-		this.image = new RGBPixel[image.width()][image.height()];
-		for (int i = 0; i < image.height(); i++) {
-			for (int j = 1; j <= image.width(); j++) {
-				pixel = image.get(i, image.width() - j);
-				this.image[j - 1][i] = new RGBPixel((int) pixel[2], (int) pixel[1], (int) pixel[0]);
+	private RGBPixel[][] pixelArray;
+	private BufferedImage bufferedImage;
+
+	public MatImage(Mat mat) {
+		pixelArray = new RGBPixel[mat.height()][mat.width()];
+		double[] pixel;
+		for (int row = 0; row < mat.height(); row++) {
+			for (int col = 0; col < mat.width(); col++) {
+				pixel = mat.get(row, col);
+				pixelArray[row][col] = new RGBPixel(pixel[2], pixel[1], pixel[0]);
+			}
+		}
+		bufferedImage = new BufferedImage(mat.width(), mat.height(), BufferedImage.TYPE_INT_RGB);
+	}
+
+	public void updatePixelArray(Mat mat) {
+		double[] pixel;
+		for (int row = 0; row < mat.height(); row++) {
+			for (int col = 0; col < mat.width(); col++) {
+				pixel = mat.get(row, col);
+				pixelArray[row][col].setPixel(pixel[2], pixel[1], pixel[0]);
 			}
 		}
 	}
-	public void updateMat(Mat image){
-		double[] pixel = new double[3];
-		this.image = new RGBPixel[image.width()][image.height()];
-		for (int i = 0; i < image.height(); i++) {
-			for (int j = 1; j <= image.width(); j++) {
-				pixel = image.get(i, image.width() - j);
-				this.image[j - 1][i] = new RGBPixel((int) pixel[2], (int) pixel[1], (int) pixel[0]);
-			}
-		}
-	}
+
 	public BufferedImage getBufferedImage() {
-		total = new BufferedImage(image.length, image[0].length, BufferedImage.TYPE_INT_RGB);
-		for (int i = 0; i < total.getHeight(); i++) {
-			for (int j = 0; j < total.getWidth(); j++) {
-				total.setRGB(j, i, image[j][i].getRGB());
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[row].length; col++) {
+				bufferedImage.setRGB(col, row, pixelArray[row][col].getRGBValue());
 			}
 		}
-		return total;
+		return bufferedImage;
 	}
-	
-	public void negate(){
-		for(int row = 0; row < image.length; row++){
-			for(int col = 0; col < image[0].length; col++){
-			    image[row][col].setRed(255 - image[row][col].getRed());
-		        image[row][col].setGreen(255 - image[row][col].getGreen());
-		        image[row][col].setBlue(255 - image[row][col].getBlue());
+
+	public void negate() {
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				int[] pixel = pixelArray[row][col].getPixel();
+				pixelArray[row][col].setPixel(255 - pixel[0], 255 - pixel[1], 255 - pixel[2]);
 			}
 		}
 	}
-	
-	public void mirrorVertical(boolean negative){
-		if(!negative){
-			for(int row = 0; row < image.length; row++){
-				for(int col = 0; col < image[0].length/2; col++){
-				    image[row][image[0].length - col-1].setRed(image[row][col].getRed());
-			        image[row][image[0].length - col-1].setGreen(image[row][col].getGreen());
-			        image[row][image[0].length - col-1].setBlue(image[row][col].getBlue());
+
+	public void mirrorVertical(boolean negative) {
+		if (!negative) {
+			for (int row = 0; row < pixelArray.length; row++) {
+				for (int col = 0; col < pixelArray[0].length / 2; col++) {
+					pixelArray[row][pixelArray[0].length - col - 1].setRed(pixelArray[row][col].getRed());
+					pixelArray[row][pixelArray[0].length - col - 1].setGreen(pixelArray[row][col].getGreen());
+					pixelArray[row][pixelArray[0].length - col - 1].setBlue(pixelArray[row][col].getBlue());
 				}
 			}
-		}
-		else{
-			for(int row = 0; row < image.length; row++){
-				for(int col = image[0].length-1; col > image[0].length/2; col--){
-				    image[row][image[0].length - col].setRed(image[row][col].getRed());
-			        image[row][image[0].length - col].setGreen(image[row][col].getGreen());
-			        image[row][image[0].length - col].setBlue(image[row][col].getBlue());
-				}
-			}
-		}
-	}
-	public void mirrorHorizontal(boolean negative){
-		if(!negative){
-			for(int row = 0; row < image.length/2; row++){
-				for(int col = 0; col < image[0].length; col++){
-				    image[image.length - 1 -row][col].setRed(image[row][col].getRed());
-			        image[image.length - 1 -row][col].setGreen(image[row][col].getGreen());
-			        image[image.length - 1 -row][col].setBlue(image[row][col].getBlue());
-				}
-			}
-		}
-		else{
-			for(int row = image.length-1; row > image.length/2; row--){
-				for(int col = 0; col < image[0].length; col++){
-				    image[image.length -row][col].setRed(image[row][col].getRed());
-			        image[image.length -row][col].setGreen(image[row][col].getGreen());
-			        image[image.length -row][col].setBlue(image[row][col].getBlue());
+		} else {
+			for (int row = 0; row < pixelArray.length; row++) {
+				for (int col = pixelArray[0].length - 1; col > pixelArray[0].length / 2; col--) {
+					pixelArray[row][pixelArray[0].length - col].setRed(pixelArray[row][col].getRed());
+					pixelArray[row][pixelArray[0].length - col].setGreen(pixelArray[row][col].getGreen());
+					pixelArray[row][pixelArray[0].length - col].setBlue(pixelArray[row][col].getBlue());
 				}
 			}
 		}
 	}
-	
-	public void pencilDrawing(int tolerance){
-		for(int row = 0; row < image.length-1; row++){
-			for(int col = 0; col < image[0].length-1; col++){
-				if(image[row][col].getRed() - image[row + 1][col].getRed() >= tolerance)image[row][col].setPixel(0, 0, 0);
-				else if(image[row][col].getGreen() - image[row + 1][col].getGreen() >= tolerance)image[row][col].setPixel(0, 0, 0);
-				else if(image[row][col].getBlue() - image[row + 1][col].getBlue() >= tolerance)image[row][col].setPixel(0, 0, 0);
-				else if(image[row][col].getRed() - image[row][col+1].getRed() >= tolerance)image[row][col].setPixel(0, 0, 0);
-				else if(image[row][col].getGreen() - image[row][col + 1].getGreen() >= tolerance)image[row][col].setPixel(0, 0, 0);
-				else if(image[row][col].getBlue() - image[row][col + 1].getBlue() >= tolerance)image[row][col].setPixel(0, 0, 0);
-				else image[row][col].setPixel(255, 255, 255);	
+
+	public void mirrorHorizontal(boolean negative) {
+		if (!negative) {
+			for (int row = 0; row < pixelArray.length / 2; row++) {
+				for (int col = 0; col < pixelArray[0].length; col++) {
+					pixelArray[pixelArray.length - 1 - row][col].setRed(pixelArray[row][col].getRed());
+					pixelArray[pixelArray.length - 1 - row][col].setGreen(pixelArray[row][col].getGreen());
+					pixelArray[pixelArray.length - 1 - row][col].setBlue(pixelArray[row][col].getBlue());
+				}
+			}
+		} else {
+			for (int row = pixelArray.length - 1; row > pixelArray.length / 2; row--) {
+				for (int col = 0; col < pixelArray[0].length; col++) {
+					pixelArray[pixelArray.length - row][col].setRed(pixelArray[row][col].getRed());
+					pixelArray[pixelArray.length - row][col].setGreen(pixelArray[row][col].getGreen());
+					pixelArray[pixelArray.length - row][col].setBlue(pixelArray[row][col].getBlue());
+				}
 			}
 		}
 	}
-	public void pencilDrawing(int tolerance, Color pencil, Color background){
-		for(int row = 0; row < image.length-1; row++){
-			for(int col = 0; col < image[0].length-1; col++){
-				if(image[row][col].getRed() - image[row + 1][col].getRed() >= tolerance)image[row][col].setPixel(pencil);
-				else if(image[row][col].getGreen() - image[row + 1][col].getGreen() >= tolerance)image[row][col].setPixel(pencil);
-				else if(image[row][col].getBlue() - image[row + 1][col].getBlue() >= tolerance)image[row][col].setPixel(pencil);
-				else if(image[row][col].getRed() - image[row][col+1].getRed() >= tolerance)image[row][col].setPixel(pencil);
-				else if(image[row][col].getGreen() - image[row][col + 1].getGreen() >= tolerance)image[row][col].setPixel(pencil);
-				else if(image[row][col].getBlue() - image[row][col + 1].getBlue() >= tolerance)image[row][col].setPixel(pencil);
-				else image[row][col].setPixel(background);	
+
+	public void pencilDrawing(int tolerance) {
+		for (int row = 0; row < pixelArray.length - 1; row++) {
+			for (int col = 0; col < pixelArray[0].length - 1; col++) {
+				if (pixelArray[row][col].getRed() - pixelArray[row + 1][col].getRed() >= tolerance)
+					pixelArray[row][col].setPixel(0, 0, 0);
+				else if (pixelArray[row][col].getGreen() - pixelArray[row + 1][col].getGreen() >= tolerance)
+					pixelArray[row][col].setPixel(0, 0, 0);
+				else if (pixelArray[row][col].getBlue() - pixelArray[row + 1][col].getBlue() >= tolerance)
+					pixelArray[row][col].setPixel(0, 0, 0);
+				else if (pixelArray[row][col].getRed() - pixelArray[row][col + 1].getRed() >= tolerance)
+					pixelArray[row][col].setPixel(0, 0, 0);
+				else if (pixelArray[row][col].getGreen() - pixelArray[row][col + 1].getGreen() >= tolerance)
+					pixelArray[row][col].setPixel(0, 0, 0);
+				else if (pixelArray[row][col].getBlue() - pixelArray[row][col + 1].getBlue() >= tolerance)
+					pixelArray[row][col].setPixel(0, 0, 0);
+				else
+					pixelArray[row][col].setPixel(255, 255, 255);
 			}
 		}
 	}
-	public void increseEdgeSharpness(int tolerance){
-		for(int row = 0; row < image.length-1; row++){
-			for(int col = 0; col < image[0].length-1; col++){
-				if(image[row][col].getRed() - image[row + 1][col].getRed() >= tolerance)image[row][col].setPixel(0, 0, 0);
-				else if(image[row][col].getGreen() - image[row + 1][col].getGreen() >= tolerance)image[row][col].setPixel(0, 0, 0);
-				else if(image[row][col].getBlue() - image[row + 1][col].getBlue() >= tolerance)image[row][col].setPixel(0, 0, 0);
-				else if(image[row][col].getRed() - image[row][col+1].getRed() >= tolerance)image[row][col].setPixel(0, 0, 0);
-				else if(image[row][col].getGreen() - image[row][col + 1].getGreen() >= tolerance)image[row][col].setPixel(0, 0, 0);
-				else if(image[row][col].getBlue() - image[row][col + 1].getBlue() >= tolerance)image[row][col].setPixel(0, 0, 0);
-				//else image[row][col].setPixel(255, 255, 255);	
+
+	public void pencilDrawing(int tolerance, Color pencil, Color background) {
+		for (int row = 0; row < pixelArray.length - 1; row++) {
+			for (int col = 0; col < pixelArray[0].length - 1; col++) {
+				if (pixelArray[row][col].getRed() - pixelArray[row + 1][col].getRed() >= tolerance)
+					pixelArray[row][col].setPixel(pencil);
+				else if (pixelArray[row][col].getGreen() - pixelArray[row + 1][col].getGreen() >= tolerance)
+					pixelArray[row][col].setPixel(pencil);
+				else if (pixelArray[row][col].getBlue() - pixelArray[row + 1][col].getBlue() >= tolerance)
+					pixelArray[row][col].setPixel(pencil);
+				else if (pixelArray[row][col].getRed() - pixelArray[row][col + 1].getRed() >= tolerance)
+					pixelArray[row][col].setPixel(pencil);
+				else if (pixelArray[row][col].getGreen() - pixelArray[row][col + 1].getGreen() >= tolerance)
+					pixelArray[row][col].setPixel(pencil);
+				else if (pixelArray[row][col].getBlue() - pixelArray[row][col + 1].getBlue() >= tolerance)
+					pixelArray[row][col].setPixel(pencil);
+				else
+					pixelArray[row][col].setPixel(background);
 			}
 		}
 	}
-	
-	public void keepRed(){
-		for(int row = 0; row < image.length-1; row++){
-			for(int col = 0; col < image[0].length; col++){
-				image[row][col].setPixel(image[row][col].getRed(), 0, 0);
+
+	public void increseEdgeSharpness(int tolerance) {
+		for (int row = 0; row < pixelArray.length - 1; row++) {
+			for (int col = 0; col < pixelArray[0].length - 1; col++) {
+				if (pixelArray[row][col].getRed() - pixelArray[row + 1][col].getRed() >= tolerance)
+					pixelArray[row][col].setPixel(0, 0, 0);
+				else if (pixelArray[row][col].getGreen() - pixelArray[row + 1][col].getGreen() >= tolerance)
+					pixelArray[row][col].setPixel(0, 0, 0);
+				else if (pixelArray[row][col].getBlue() - pixelArray[row + 1][col].getBlue() >= tolerance)
+					pixelArray[row][col].setPixel(0, 0, 0);
+				else if (pixelArray[row][col].getRed() - pixelArray[row][col + 1].getRed() >= tolerance)
+					pixelArray[row][col].setPixel(0, 0, 0);
+				else if (pixelArray[row][col].getGreen() - pixelArray[row][col + 1].getGreen() >= tolerance)
+					pixelArray[row][col].setPixel(0, 0, 0);
+				else if (pixelArray[row][col].getBlue() - pixelArray[row][col + 1].getBlue() >= tolerance)
+					pixelArray[row][col].setPixel(0, 0, 0);
+				// else image[row][col].setPixel(255, 255, 255);
 			}
 		}
 	}
-	public void keepBlue(){
-		for(int row = 0; row < image.length-1; row++){
-			for(int col = 0; col < image[0].length; col++){
-				image[row][col].setPixel(0, 0, image[row][col].getBlue());
+
+	public void keepRed() {
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				pixelArray[row][col].setPixel(pixelArray[row][col].getRed(), 0, 0);
 			}
 		}
 	}
-	public void keepGreen(){
-		for(int row = 0; row < image.length-1; row++){
-			for(int col = 0; col < image[0].length; col++){
-				image[row][col].setPixel(0, image[row][col].getGreen(), 0);
+
+	public void keepBlue() {
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				pixelArray[row][col].setPixel(0, 0, pixelArray[row][col].getBlue());
 			}
 		}
 	}
-	
-	public void grayscale(){
+
+	public void keepGreen() {
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				pixelArray[row][col].setPixel(0, pixelArray[row][col].getGreen(), 0);
+			}
+		}
+	}
+
+	public void grayscale() {
 		int avg = 0;
-		for(int row = 0; row < image.length-1; row++){
-			for(int col = 0; col < image[0].length; col++){
-				avg = (image[row][col].getGreen() + image[row][col].getRed() + image[row][col].getBlue())/3;
-				image[row][col].setPixel(avg, avg, avg);
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				avg = (pixelArray[row][col].getGreen() + pixelArray[row][col].getRed() + pixelArray[row][col].getBlue())
+						/ 3;
+				pixelArray[row][col].setPixel(avg, avg, avg);
 			}
 		}
 	}
-	
-	public void zeroGreen(){
-		for(int row = 0; row < image.length-1; row++){
-			for(int col = 0; col < image[0].length; col++){
-				image[row][col].setPixel(image[row][col].getRed(), 0,  image[row][col].getBlue());
+
+	public void zeroGreen() {
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				pixelArray[row][col].setPixel(pixelArray[row][col].getRed(), 0, pixelArray[row][col].getBlue());
 			}
 		}
 	}
-	public void zeroRed(){
-		for(int row = 0; row < image.length-1; row++){
-			for(int col = 0; col < image[0].length; col++){
-				image[row][col].setPixel(0, image[row][col].getGreen(),  image[row][col].getBlue());
+
+	public void zeroRed() {
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				pixelArray[row][col].setPixel(0, pixelArray[row][col].getGreen(), pixelArray[row][col].getBlue());
 			}
 		}
 	}
-	public void zeroBlue(){
-		for(int row = 0; row < image.length-1; row++){
-			for(int col = 0; col < image[0].length; col++){
-				image[row][col].setPixel(image[row][col].getRed(), image[row][col].getGreen(), 0);
+
+	public void zeroBlue() {
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				pixelArray[row][col].setPixel(pixelArray[row][col].getRed(), pixelArray[row][col].getGreen(), 0);
 			}
 		}
 	}
-	
-	public void switchBlueRedGreen(){
-		for(int row = 0; row < image.length-1; row++){
-			for(int col = 0; col < image[0].length; col++){
-				image[row][col].setPixel(image[row][col].getBlue(), image[row][col].getRed() ,image[row][col].getGreen() );
+
+	public void switchBlueRedGreen() {
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				pixelArray[row][col].setPixel(pixelArray[row][col].getBlue(), pixelArray[row][col].getRed(),
+						pixelArray[row][col].getGreen());
 			}
 		}
 	}
-	public void switchGreenBlueRed(){
-		for(int row = 0; row < image.length-1; row++){
-			for(int col = 0; col < image[0].length; col++){
-				image[row][col].setPixel(image[row][col].getGreen() , image[row][col].getBlue() ,image[row][col].getRed());
+
+	public void switchGreenBlueRed() {
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				pixelArray[row][col].setPixel(pixelArray[row][col].getGreen(), pixelArray[row][col].getBlue(),
+						pixelArray[row][col].getRed());
 			}
 		}
 	}
-	public void switchBlueGreenRed(){
-		for(int row = 0; row < image.length-1; row++){
-			for(int col = 0; col < image[0].length; col++){
-				image[row][col].setPixel( image[row][col].getBlue(), image[row][col].getGreen()  ,image[row][col].getRed());
+
+	public void switchBlueGreenRed() {
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				pixelArray[row][col].setPixel(pixelArray[row][col].getBlue(), pixelArray[row][col].getGreen(),
+						pixelArray[row][col].getRed());
 			}
 		}
 	}
-	
-	public void sepia(){
-		for(int row = 0; row < image.length-1; row++){
-			for(int col = 0; col < image[0].length; col++){
-				double red = (image[row][col].getPixel()[0] * .393) + (image[row][col].getPixel()[1] * .769) + (image[row][col].getPixel()[2] * .189);
-				double green = (image[row][col].getPixel()[0] * .349) + (image[row][col].getPixel()[1] * .686) + (image[row][col].getPixel()[2] * .168);
-				double blue = (image[row][col].getPixel()[0] * .272) + (image[row][col].getPixel()[1] * .534) + (image[row][col].getPixel()[2] * .132);
-				if(red > 255) red = 255;
-				if(green > 255) green = 255;
-				if(blue > 255) blue = 255;
-				image[row][col].setPixel((int) red, (int) green, (int) blue);
+
+	public void sepia() {
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				double red = (pixelArray[row][col].getPixel()[0] * .393) + (pixelArray[row][col].getPixel()[1] * .769)
+						+ (pixelArray[row][col].getPixel()[2] * .189);
+				double green = (pixelArray[row][col].getPixel()[0] * .349) + (pixelArray[row][col].getPixel()[1] * .686)
+						+ (pixelArray[row][col].getPixel()[2] * .168);
+				double blue = (pixelArray[row][col].getPixel()[0] * .272) + (pixelArray[row][col].getPixel()[1] * .534)
+						+ (pixelArray[row][col].getPixel()[2] * .132);
+				if (red > 255)
+					red = 255;
+				if (green > 255)
+					green = 255;
+				if (blue > 255)
+					blue = 255;
+				pixelArray[row][col].setPixel((int) red, (int) green, (int) blue);
 			}
 		}
 	}
-	
+
+	public void colorThreshold(int[] redRange, int[] greenRange, int[] blueRange) {
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				int[] pixel = pixelArray[row][col].getPixel();
+				if (pixel[0] < redRange[0] || pixel[0] > redRange[1] || pixel[1] < greenRange[0]
+						|| pixel[1] > greenRange[1] || pixel[2] < blueRange[0] || pixel[2] > blueRange[1]) {
+					pixelArray[row][col].setBlack();
+				} else {
+					pixelArray[row][col].setWhite();
+				}
+			}
+		}
+	}
+
+	public void colorThresholdRed(int[] redRange) {
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				int[] pixel = pixelArray[row][col].getPixel();
+				if (pixel[0] < redRange[0] || pixel[0] > redRange[1]) {
+					pixelArray[row][col].setBlack();
+				} else {
+					pixelArray[row][col].setWhite();
+				}
+			}
+		}
+	}
+
+	public void colorThresholdGreen(int[] greenRange) {
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				int[] pixel = pixelArray[row][col].getPixel();
+				if (pixel[1] < greenRange[0] || pixel[1] > greenRange[1]) {
+					pixelArray[row][col].setBlack();
+				} else {
+					pixelArray[row][col].setWhite();
+				}
+			}
+		}
+	}
+
+	public void colorThresholdBlue(int[] blueRange) {
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				int[] pixel = pixelArray[row][col].getPixel();
+				if (pixel[2] < blueRange[0] || pixel[2] > blueRange[1]) {
+					pixelArray[row][col].setBlack();
+				} else {
+					pixelArray[row][col].setWhite();
+				}
+			}
+		}
+	}
+
 	public void highlightRed(int tolerance) {
-		for(int row = 0; row < image.length-1; row++){
-			for(int col = 0; col < image[0].length; col++){
-				if(image[row][col].getRed() - image[row][col].getBlue() > tolerance && image[row][col].getRed() - image[row][col].getGreen() > tolerance)
-					image[row][col].setPixel(Color.WHITE);
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				if (pixelArray[row][col].getRed() - pixelArray[row][col].getBlue() > tolerance
+						&& pixelArray[row][col].getRed() - pixelArray[row][col].getGreen() > tolerance)
+					pixelArray[row][col].setWhite();
 				else
-					image[row][col].setPixel(Color.BLACK);
+					pixelArray[row][col].setBlack();
 			}
 		}
 	}
+
 	public void highlightGreen(int tolerance) {
-		for(int row = 0; row < image.length-1; row++){
-			for(int col = 0; col < image[0].length; col++){
-				if(image[row][col].getGreen() - image[row][col].getBlue() > tolerance && image[row][col].getGreen() - image[row][col].getBlue() > tolerance)
-					image[row][col].setPixel(Color.WHITE);
+		for (int row = 0; row < pixelArray.length - 1; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				if (pixelArray[row][col].getGreen() - pixelArray[row][col].getBlue() > tolerance
+						&& pixelArray[row][col].getGreen() - pixelArray[row][col].getBlue() > tolerance)
+					pixelArray[row][col].setWhite();
 				else
-					image[row][col].setPixel(Color.BLACK);
+					pixelArray[row][col].setBlack();
 			}
 		}
 	}
+
 	public void highlightBlue(int tolerance) {
-		for(int row = 0; row < image.length-1; row++){
-			for(int col = 0; col < image[0].length; col++){
-				if(image[row][col].getBlue() - image[row][col].getRed() > tolerance && image[row][col].getBlue() - image[row][col].getGreen() > tolerance)
-					image[row][col].setPixel(Color.WHITE);
+		for (int row = 0; row < pixelArray.length - 1; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				if (pixelArray[row][col].getBlue() - pixelArray[row][col].getRed() > tolerance
+						&& pixelArray[row][col].getBlue() - pixelArray[row][col].getGreen() > tolerance)
+					pixelArray[row][col].setWhite();
 				else
-					image[row][col].setPixel(Color.BLACK);
+					pixelArray[row][col].setBlack();
 			}
 		}
 	}
