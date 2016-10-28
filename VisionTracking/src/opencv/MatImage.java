@@ -22,6 +22,10 @@ public class MatImage {
 		bufferedImage = new BufferedImage(mat.width(), mat.height(), BufferedImage.TYPE_INT_RGB);
 	}
 
+	public RGBPixel[][] getPixelArray() {
+		return pixelArray;
+	}
+
 	public void updatePixelArray(Mat mat) {
 		double[] pixel;
 		for (int row = 0; row < mat.height(); row++) {
@@ -293,14 +297,11 @@ public class MatImage {
 			}
 		}
 	}
-	public void highlightCustom(Color c, int tolerance) {
+	public void highlightCustom(int[] rgb, int tolerance) {
 		for (int row = 0; row < pixelArray.length - 1; row++) {
 			for (int col = 0; col < pixelArray[0].length; col++) {
-				if (pixelArray[row][col].getDistanceSquared(c) < tolerance * tolerance) {
-					// pixelArray[row][col].setWhite();
-					if (row % 2 == 0)
-						pixelArray[row][col].setPixel(c);
-				}
+				if (pixelArray[row][col].getDistanceSquared(rgb) < tolerance * tolerance)
+					pixelArray[row][col].setWhite();
 				// else pixelArray[row][col].setBlack();
 			}
 		}

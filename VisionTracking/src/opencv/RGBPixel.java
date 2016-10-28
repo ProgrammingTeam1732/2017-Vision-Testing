@@ -79,9 +79,9 @@ public class RGBPixel {
 	public void setWhite() {
 		rgb = new int[] { 255, 255, 255 };
 	}
-	public int getDistanceSquared(Color c) {
-		int dr = c.getRed()-rgb[0], db = c.getBlue()-rgb[2], dg = c.getGreen()-rgb[1];
-		return (dr*dr)+(db*db)+(dg*dg);
+	public int getDistanceSquared(int[] c) {
+		int dr = c[0] - rgb[0], dg = c[1] - rgb[1], db = c[2] - rgb[2];
+		return (dr * dr) + (db * db) + (dg * dg);
 	}
 
 }
