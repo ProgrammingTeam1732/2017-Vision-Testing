@@ -1,6 +1,8 @@
 package opencv;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -14,14 +16,14 @@ import javax.swing.JTextArea;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.videoio.VideoCapture;
+import org.opencv.highgui.VideoCapture;
 
 public class LiveVideoFeed extends JFrame implements MouseListener {
 
 	private static final long serialVersionUID = -2222565840007699833L;
 
 	MatImage matImage;
-	JSlider red, green, blue;
+	JSlider redSlider, greenSlider, blueSlider;
 
 	public LiveVideoFeed() {
 		String opencvpath = System.getProperty("user.dir") + "\\files\\";
@@ -32,9 +34,6 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 
 		VideoCapture camera = new VideoCapture(0);
 
-		// http://169.254.148.78/axis-media/media.amp
-		// http://169.254.148.78/mjpg/video.mjpg
-
 		if (!camera.open(0)) { // "http://169.254.148.78/mjpg/video.mjpg")) {
 			System.out.println("Error");
 		}
@@ -43,34 +42,47 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 		camera.read(mat);
 		matImage = new MatImage(mat);
 
-		Toolkit tk = Toolkit.getDefaultToolkit();
-		Dimension dim = tk.getScreenSize();
+		ImageIcon colorIcon = new ImageIcon(matImage.getBufferedImage());
+		JLabel colorLabel = new JLabel("", colorIcon, JLabel.LEFT);
+
+		ImageIcon bitmapIcon = new ImageIcon(matImage.getBitmapImage(new int[] { 0, 0, 0 }, 0));
+		JLabel bitmapLabel = new JLabel("", bitmapIcon, JLabel.LEFT);
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		ImageIcon icon = new ImageIcon(matImage.getBufferedImage());
 		this.setResizable(false);
-		this.setSize(icon.getIconWidth(), icon.getIconHeight() + 123);
+		this.setSize(colorIcon.getIconWidth() * 2, colorIcon.getIconHeight() + 123);
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation(dim.width / 2 - this.getWidth() / 2, dim.height / 2 - this.getHeight() / 2);
-		JLabel label1 = new JLabel("", icon, JLabel.CENTER);
+
 		JTextArea field1 = new JTextArea(2, 10);
-		JSlider tolerance = new JSlider(0, 255);
-		tolerance.setToolTipText("TOLERANCE");
-		tolerance.setValue(0);
-		red = new JSlider(0, 255);
-		red.setToolTipText("RED");
-		green = new JSlider(0, 255);
-		green.setToolTipText("GREEN");
-		blue = new JSlider(0, 255);
-		blue.setToolTipText("BLUE");
-		JPanel panel = new JPanel();
-		panel.add(label1);
-		panel.add(red);
-		panel.add(green);
-		panel.add(blue);
-		panel.add(tolerance);
-		panel.add(field1);
-		this.add(panel);
-		panel.addMouseListener(this);
+
+		JSlider toleranceSlider = new JSlider(0, 255);
+		toleranceSlider.setToolTipText("TOLERANCE");
+		redSlider = new JSlider(0, 255);
+		redSlider.setToolTipText("RED");
+		greenSlider = new JSlider(0, 255);
+		greenSlider.setToolTipText("GREEN");
+		blueSlider = new JSlider(0, 255);
+		blueSlider.setToolTipText("BLUE");
+
+		JPanel container = new JPanel();
+		container.setLayout(new GridLayout(1, 2));
+
+		JPanel panel1 = new JPanel();
+		panel1.add(colorLabel);
+		panel1.add(redSlider);
+		panel1.add(greenSlider);
+		panel1.add(blueSlider);
+		panel1.add(toleranceSlider);
+		panel1.add(field1);
+		panel1.addMouseListener(this);
+
+		JPanel panel2 = new JPanel();
+		panel2.add(bitmapLabel);
+
+		container.add(panel1);
+		container.add(panel2);
+		this.add(container);
 		this.validate();
 		this.setVisible(true);
 
@@ -78,17 +90,26 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 		long FPS = 1;
 		long prevFPS = 1;
 		long beforePrevFPS = 1;
+		System.out.println("bla");
 		while (true) {
 			start = System.currentTimeMillis();
+
 			camera.read(mat);
+
+			int[] targetColor = new int[] { redSlider.getValue(), greenSlider.getValue(), blueSlider.getValue() };
+			int tolerance = toleranceSlider.getValue();
+
 			matImage.updatePixelArray(mat);
-			matImage.highlightCustom(new int[] { red.getValue(), green.getValue(), blue.getValue() },
-					tolerance.getValue());
-			icon.setImage(matImage.getBufferedImage());
+
+			colorIcon.setImage(matImage.getBufferedImage());
+			bitmapIcon.setImage(matImage.getBitmapImage(targetColor, tolerance));
+
 			this.setTitle("FPS: " + (FPS + prevFPS + beforePrevFPS) / 3);
+			field1.setText(String.format("Red: %3d  Green: %3d%nBlue: %3d Tolerance: %3d", targetColor[0],
+					targetColor[1], targetColor[2], tolerance));
+
 			this.repaint();
-			field1.setText(String.format("Red: %3d  Green: %3d%nBlue: %3d Tolerance: %3d", red.getValue(),
-					green.getValue(), blue.getValue(), tolerance.getValue()));
+
 			beforePrevFPS = prevFPS;
 			prevFPS = FPS;
 			FPS = Math.round((1000.0 / (System.currentTimeMillis() - start)) / 5) * 5;
@@ -101,17 +122,25 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		int[] selectedColor = matImage.getPixelArray()[e.getY()][e.getX()].rgb;
-		red.setValue(selectedColor[0]);
-		green.setValue(selectedColor[1]);
-		blue.setValue(selectedColor[2]);
+		int[] pixel = matImage.getPixelArray()[e.getY()][e.getX()].getPixel();
+		redSlider.setValue(pixel[0]);
+		greenSlider.setValue(pixel[1]);
+		blueSlider.setValue(pixel[2]);
 	}
+
+	@Override
 	public void mouseEntered(MouseEvent e) {
 	}
+
+	@Override
 	public void mouseExited(MouseEvent e) {
 	}
+
+	@Override
 	public void mousePressed(MouseEvent e) {
 	}
+
+	@Override
 	public void mouseReleased(MouseEvent e) {
 	}
 }

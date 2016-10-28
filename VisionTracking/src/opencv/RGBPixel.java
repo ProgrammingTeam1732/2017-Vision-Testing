@@ -5,7 +5,7 @@ import java.awt.Color;
 
 public class RGBPixel {
 
-	int[] rgb = new int[3];
+	private int[] rgb = new int[3];
 
 	public RGBPixel(int red, int green, int blue) {
 		rgb[0] = red;
@@ -38,7 +38,7 @@ public class RGBPixel {
 	}
 
 	public int[] getPixel() {
-		return new int[] { rgb[0], rgb[1], rgb[2] };
+		return rgb;
 	}
 
 	public int getRGBValue() {
@@ -79,6 +79,7 @@ public class RGBPixel {
 	public void setWhite() {
 		rgb = new int[] { 255, 255, 255 };
 	}
+
 	public int getDistanceSquared(int[] c) {
 		int dr = c[0] - rgb[0], dg = c[1] - rgb[1], db = c[2] - rgb[2];
 		return (dr * dr) + (db * db) + (dg * dg);

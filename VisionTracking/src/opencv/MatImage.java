@@ -9,6 +9,7 @@ import org.opencv.core.Mat;
 public class MatImage {
 	private RGBPixel[][] pixelArray;
 	private BufferedImage bufferedImage;
+	private BufferedImage bitmapImage;
 
 	public MatImage(Mat mat) {
 		pixelArray = new RGBPixel[mat.height()][mat.width()];
@@ -20,6 +21,7 @@ public class MatImage {
 			}
 		}
 		bufferedImage = new BufferedImage(mat.width(), mat.height(), BufferedImage.TYPE_INT_RGB);
+		bitmapImage = new BufferedImage(mat.width(), mat.height(), BufferedImage.TYPE_INT_RGB);
 	}
 
 	public RGBPixel[][] getPixelArray() {
@@ -43,6 +45,16 @@ public class MatImage {
 			}
 		}
 		return bufferedImage;
+	}
+
+	public BufferedImage getBitmapImage(int[] rgb, int tolerance) {
+		for (int row = 0; row < pixelArray.length; row++) {
+			for (int col = 0; col < pixelArray[0].length; col++) {
+				bitmapImage.setRGB(col, row,
+						pixelArray[row][col].getDistanceSquared(rgb) < tolerance * tolerance ? 0xFFFFFF : 0);
+			}
+		}
+		return bitmapImage;
 	}
 
 	public void negate() {
@@ -275,7 +287,7 @@ public class MatImage {
 	}
 
 	public void highlightGreen(int tolerance) {
-		for (int row = 0; row < pixelArray.length - 1; row++) {
+		for (int row = 0; row < pixelArray.length; row++) {
 			for (int col = 0; col < pixelArray[0].length; col++) {
 				if (pixelArray[row][col].getGreen() - pixelArray[row][col].getBlue() > tolerance
 						&& pixelArray[row][col].getGreen() - pixelArray[row][col].getBlue() > tolerance)
@@ -287,7 +299,7 @@ public class MatImage {
 	}
 
 	public void highlightBlue(int tolerance) {
-		for (int row = 0; row < pixelArray.length - 1; row++) {
+		for (int row = 0; row < pixelArray.length; row++) {
 			for (int col = 0; col < pixelArray[0].length; col++) {
 				if (pixelArray[row][col].getBlue() - pixelArray[row][col].getRed() > tolerance
 						&& pixelArray[row][col].getBlue() - pixelArray[row][col].getGreen() > tolerance)
@@ -297,8 +309,9 @@ public class MatImage {
 			}
 		}
 	}
+
 	public void highlightCustom(int[] rgb, int tolerance) {
-		for (int row = 0; row < pixelArray.length - 1; row++) {
+		for (int row = 0; row < pixelArray.length; row++) {
 			for (int col = 0; col < pixelArray[0].length; col++) {
 				if (pixelArray[row][col].getDistanceSquared(rgb) < tolerance * tolerance)
 					pixelArray[row][col].setWhite();
@@ -306,4 +319,5 @@ public class MatImage {
 			}
 		}
 	}
+
 }

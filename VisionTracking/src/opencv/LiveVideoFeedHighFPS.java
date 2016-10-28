@@ -6,12 +6,11 @@ import javax.swing.JLabel;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.videoio.VideoCapture;
+import org.opencv.highgui.VideoCapture;
 
 public class LiveVideoFeedHighFPS {
 
 	public static volatile MatImage matImage;
-	public static volatile BitmapImage bitmap;
 	public static volatile boolean updated = false;
 
 	public static void main(String[] args) {
@@ -33,13 +32,11 @@ public class LiveVideoFeedHighFPS {
 
 		Mat mat = new Mat();
 		camera.read(mat);
-		// matImage = new MatImage(mat);
-		bitmap = new BitmapImage(mat, new int[] { 255, 0, 0 }, 150);
+		matImage = new MatImage(mat);
 
 		JFrame frame = new JFrame("IMG");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		// ImageIcon icon = new ImageIcon(matImage.getBufferedImage());
-		ImageIcon icon = new ImageIcon(bitmap.getBufferedImage());
+		ImageIcon icon = new ImageIcon(matImage.getBufferedImage());
 		frame.setResizable(false);
 		frame.setLocation(200, 100);
 		frame.setSize(icon.getIconWidth(), icon.getIconHeight());
@@ -52,11 +49,11 @@ public class LiveVideoFeedHighFPS {
 			while (true) {
 				updated = false;
 				camera.read(mat);
-				bitmap.updateBitmap(mat);
-				// matImage.updatePixelArray(mat);
-				// matImage.highlightRed(5);
-				// // matImage.mirrorHorizontal(true);
-				// // matImage.pencilDrawing(5);
+
+				matImage.updatePixelArray(mat);
+				matImage.highlightRed(5);
+				// matImage.mirrorHorizontal(true);
+				// matImage.pencilDrawing(5);
 				updated = true;
 			}
 		}).start();
@@ -69,8 +66,7 @@ public class LiveVideoFeedHighFPS {
 			start = System.currentTimeMillis();
 			while (!updated)
 				;
-			// icon.setImage(matImage.getBufferedImage());
-			icon.setImage(bitmap.getBufferedImage());
+			icon.setImage(matImage.getBufferedImage());
 			frame.setTitle("FPS: " + (FPS + prevFPS + beforePrevFPS) / 3);
 			frame.repaint();
 			beforePrevFPS = prevFPS;
