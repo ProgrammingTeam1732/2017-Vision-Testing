@@ -4,14 +4,24 @@ package opencv;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfKeyPoint;
+import org.opencv.core.Scalar;
+import org.opencv.features2d.FeatureDetector;
 
 public class MatImage {
-	private RGBPixel[][] pixelArray;
-	private BufferedImage bufferedImage;
-	private BufferedImage bitmapImage;
+	private RGBPixel[][]	pixelArray;
+	private Mat				mat;
+	private BufferedImage	bufferedImage;
+	private Mat				matBitmap;
+	private BufferedImage	bitmapImage;
+	private FeatureDetector	detector	= FeatureDetector.create(FeatureDetector.FAST);
+	private MatOfKeyPoint	keyPoints	= new MatOfKeyPoint();
 
-	public MatImage(Mat mat) {
+	public MatImage(Mat mat, Mat matBitmap) {
+		this.mat = mat;
+		this.matBitmap = matBitmap;
 		pixelArray = new RGBPixel[mat.height()][mat.width()];
 		double[] pixel;
 		for (int row = 0; row < mat.height(); row++) {
@@ -47,14 +57,42 @@ public class MatImage {
 		return bufferedImage;
 	}
 
-	public BufferedImage getBitmapImage(int[] rgb, int tolerance) {
-		for (int row = 0; row < pixelArray.length; row++) {
-			for (int col = 0; col < pixelArray[0].length; col++) {
-				bitmapImage.setRGB(col, row,
-						pixelArray[row][col].getDistanceSquared(rgb) < tolerance * tolerance ? 0xFFFFFF : 0);
+	public BufferedImage getBitmapImage() {
+		double[] pixel;
+		for (int row = 0; row < mat.height(); row++) {
+			for (int col = 0; col < mat.width(); col++) {
+				pixel = matBitmap.get(row, col);
+				int value = pixel[0] == 0 ? 0 : 0xFFFFFF;
+				bitmapImage.setRGB(col, row, value);
+			}
+		}
+		for (int row = 0; row < keyPoints.height(); row++) {
+			for (int col = 0; col < keyPoints.width(); col++) {
+				pixel = keyPoints.get(row, col);
+				drawSquare((int) pixel[1], (int) pixel[0], 200, new RGBPixel(255, 0, 0));
 			}
 		}
 		return bitmapImage;
+	}
+
+	public void drawSquare(int row, int col, int size, RGBPixel pixel) {
+		for (int i = row; i < row + size && row + size < bitmapImage.getHeight(); i++) {
+			for (int j = col; j < col + size && col + size < bitmapImage.getWidth(); j++) {
+				bufferedImage.setRGB(col, row, pixel.getRGBValue());
+			}
+		}
+	}
+
+	public void setBitmapImage(double[] target, int tolerance) {
+		Scalar lower = new Scalar(target[2] - tolerance, target[1] - tolerance, target[0] - tolerance);
+		Scalar upper = new Scalar(target[2] + tolerance, target[1] + tolerance, target[0] + tolerance);
+		Core.inRange(mat, lower, upper, matBitmap);
+		// Core.bitwise_not(matBitmap, matBitmap);
+	}
+
+	public void detectBlobs() {
+		detector.detect(matBitmap, keyPoints);
+		System.out.println(keyPoints.size());
 	}
 
 	public void negate() {

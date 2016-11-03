@@ -6,12 +6,12 @@ import javax.swing.JLabel;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.highgui.VideoCapture;
+import org.opencv.videoio.VideoCapture;
 
 public class LiveVideoFeedHighFPS {
 
-	public static volatile MatImage matImage;
-	public static volatile boolean updated = false;
+	public static volatile MatImage	matImage;
+	public static volatile boolean	updated	= false;
 
 	public static void main(String[] args) {
 
@@ -32,7 +32,7 @@ public class LiveVideoFeedHighFPS {
 
 		Mat mat = new Mat();
 		camera.read(mat);
-		matImage = new MatImage(mat);
+		matImage = new MatImage(mat, mat);
 
 		JFrame frame = new JFrame("IMG");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
