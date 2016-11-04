@@ -6,7 +6,7 @@ import javax.swing.JLabel;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.videoio.VideoCapture;
+import org.opencv.highgui.VideoCapture;
 
 public class LiveVideoFeedHighFPS {
 
