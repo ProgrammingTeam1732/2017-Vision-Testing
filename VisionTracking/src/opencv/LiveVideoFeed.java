@@ -36,14 +36,15 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 			System.out.println("Error");
 		}
 		Mat mat = new Mat();
-		Mat matBitmap = new Mat();
 		camera.read(mat);
-		matImage = new MatImage(mat, matBitmap);
+		matImage = new MatImage(mat);
 
 		ImageIcon colorIcon = new ImageIcon(matImage.getBufferedImage());
 		JLabel colorLabel = new JLabel("", colorIcon, JLabel.LEFT);
 
-		matImage.setBitmapImage(new double[] { 0, 0, 0 }, 0);
+		matImage.updateBitmapArray(new int[] { 255, 255, 255 }, 10);
+		matImage.detectBlobs();
+		matImage.drawBoxes(new int[] { 255, 0, 0 });
 		ImageIcon bitmapIcon = new ImageIcon(matImage.getBitmapImage());
 		JLabel bitmapLabel = new JLabel("", bitmapIcon, JLabel.LEFT);
 
@@ -57,12 +58,16 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 
 		JSlider toleranceSlider = new JSlider(0, 255);
 		toleranceSlider.setToolTipText("TOLERANCE");
+		toleranceSlider.setValue(10);
 		redSlider = new JSlider(0, 255);
 		redSlider.setToolTipText("RED");
+		redSlider.setValue(255);
 		greenSlider = new JSlider(0, 255);
 		greenSlider.setToolTipText("GREEN");
+		greenSlider.setValue(255);
 		blueSlider = new JSlider(0, 255);
 		blueSlider.setToolTipText("BLUE");
+		blueSlider.setValue(255);
 
 		JPanel container = new JPanel();
 		container.setLayout(new GridLayout(1, 2));
@@ -89,22 +94,26 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 		long FPS = 1;
 		long prevFPS = 1;
 		long beforePrevFPS = 1;
+		int[] boxColor = { 255, 0, 0 };
 		while (true) {
 			start = System.currentTimeMillis();
 
-			camera.read(mat);
-			matImage.updatePixelArray(mat);
-			colorIcon.setImage(matImage.getBufferedImage());
 			int tolerance = toleranceSlider.getValue();
-			double[] targetColor = new double[] { redSlider.getValue(), greenSlider.getValue(), blueSlider.getValue() };
-			matImage.setBitmapImage(targetColor, tolerance);
+			int[] targetColor = new int[] { redSlider.getValue(), greenSlider.getValue(), blueSlider.getValue() };
+			field1.setText(String.format("Red: %d Green: %d%nBlue: %d Tolerance:%3d", targetColor[0], targetColor[1],
+					targetColor[2], tolerance));
+
+			camera.read(mat);
+			matImage.updateBufferedArray(mat);
+			matImage.updateBitmapArray(targetColor, tolerance);
+
 			matImage.detectBlobs();
+			matImage.drawBoxes(boxColor);
+
+			colorIcon.setImage(matImage.getBufferedImage());
 			bitmapIcon.setImage(matImage.getBitmapImage());
 
 			this.setTitle("FPS: " + (FPS + prevFPS + beforePrevFPS) / 3);
-			field1.setText(String.format("Red: %3.0f  Green: %3.0f%nBlue: %3.0f Tolerance: %3d", targetColor[0],
-					targetColor[1], targetColor[2], tolerance));
-
 			this.repaint();
 
 			beforePrevFPS = prevFPS;
@@ -119,7 +128,8 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		int[] pixel = matImage.getPixelArray()[e.getY()][e.getX()].getPixel();
+		int[] pixel = new int[3];
+		matImage.getBufferedImage().getRaster().getPixel(e.getX(), e.getY(), pixel);
 		redSlider.setValue(pixel[0]);
 		greenSlider.setValue(pixel[1]);
 		blueSlider.setValue(pixel[2]);

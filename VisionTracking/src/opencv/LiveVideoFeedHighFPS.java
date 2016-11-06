@@ -32,7 +32,7 @@ public class LiveVideoFeedHighFPS {
 
 		Mat mat = new Mat();
 		camera.read(mat);
-		matImage = new MatImage(mat, mat);
+		matImage = new MatImage(mat);
 
 		JFrame frame = new JFrame("IMG");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -49,11 +49,12 @@ public class LiveVideoFeedHighFPS {
 			while (true) {
 				updated = false;
 				camera.read(mat);
+				camera.read(mat);
+				matImage.updateBufferedArray(mat);
+				matImage.updateBitmapArray(new int[] { 0, 0, 0 }, 10);
 
-				matImage.updatePixelArray(mat);
-				matImage.highlightRed(5);
-				// matImage.mirrorHorizontal(true);
-				// matImage.pencilDrawing(5);
+				matImage.detectBlobs();
+				matImage.drawBoxes(new int[] { 255, 0, 0 });
 				updated = true;
 			}
 		}).start();

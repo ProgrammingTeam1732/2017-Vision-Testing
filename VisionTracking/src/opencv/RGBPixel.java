@@ -48,6 +48,20 @@ public class RGBPixel {
 		return rgbValue;
 	}
 
+	public static int getRGBValue(int[] rgb) {
+		int rgbValue = rgb[0];
+		rgbValue = (rgbValue << 8) + rgb[1];
+		rgbValue = (rgbValue << 8) + rgb[2];
+		return rgbValue;
+	}
+
+	public static int getRGBValue(int red, int green, int blue) {
+		int rgbValue = red;
+		rgbValue = (rgbValue << 8) + green;
+		rgbValue = (rgbValue << 8) + blue;
+		return rgbValue;
+	}
+
 	public int getRed() {
 		return rgb[0];
 	}

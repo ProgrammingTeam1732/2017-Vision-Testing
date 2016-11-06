@@ -15,7 +15,6 @@ import javax.swing.JLabel;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.Scalar;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
@@ -31,7 +30,7 @@ public class Testing {
 			System.out.printf("%d: %s%n", i, list.get(i));
 		}
 		// ???
-		Imgproc.drawContours(mat, list, -1, new Scalar(0, 0, 255));
+		// Imgproc.drawContours(mat, list, -1, new Scalar(0, 0, 255));
 
 		// display the mat
 		ImageIcon colorIcon = new ImageIcon(toBufferedImage(mat));
