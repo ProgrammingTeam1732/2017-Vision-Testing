@@ -38,6 +38,7 @@ public class LiveVideoFeedHighFPS extends JFrame implements MouseListener {
 		Mat mat = new Mat();
 		camera.read(mat);
 		matImage = new MatImage(mat);
+		matCopy = new Mat();
 		mat.copyTo(matCopy);
 
 		ImageIcon colorIcon = new ImageIcon(matImage.getBufferedImage());
@@ -45,7 +46,7 @@ public class LiveVideoFeedHighFPS extends JFrame implements MouseListener {
 
 		matImage.updateBitmapArray(new int[] { 255, 255, 255 }, 10);
 		matImage.detectBlobs();
-		matImage.drawBoxes(new int[] { 255, 0, 0 });
+		matImage.drawBoxes();
 		ImageIcon bitmapIcon = new ImageIcon(matImage.getBitmapImage());
 		JLabel bitmapLabel = new JLabel("", bitmapIcon, JLabel.LEFT);
 
@@ -90,7 +91,6 @@ public class LiveVideoFeedHighFPS extends JFrame implements MouseListener {
 		this.add(container);
 		this.validate();
 		this.setVisible(true);
-		int[] boxColor = { 255, 0, 0 };
 
 		new Thread(() -> {
 			while (true) {
@@ -119,7 +119,7 @@ public class LiveVideoFeedHighFPS extends JFrame implements MouseListener {
 			matImage.updateBitmapArray(targetColor, tolerance);
 
 			matImage.detectBlobs();
-			matImage.drawBoxes(boxColor);
+			matImage.drawBoxes();
 
 			colorIcon.setImage(matImage.getBufferedImage());
 			bitmapIcon.setImage(matImage.getBitmapImage());
@@ -135,7 +135,7 @@ public class LiveVideoFeedHighFPS extends JFrame implements MouseListener {
 	}
 
 	public static void main(String[] args) {
-		new LiveVideoFeed();
+		new LiveVideoFeedHighFPS();
 	}
 
 	@Override

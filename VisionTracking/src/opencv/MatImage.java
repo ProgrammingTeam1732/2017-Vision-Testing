@@ -97,9 +97,11 @@ public class MatImage {
 		}
 	}
 
-	public void drawBoxes(int[] color) {
+	public int[] boxColor = new int[] { 255, 0, 0 };
+
+	public void drawBoxes() {
 		for (BoundingBox box : finder.goodBoundingBoxes) {
-			drawRectange(box.rowMin, box.colMin, box.rowMax, box.colMax, 1, color);
+			drawRectange(box.rowMin, box.colMin, box.rowMax, box.colMax, 1, boxColor);
 			// System.out.println(box);
 		}
 	}

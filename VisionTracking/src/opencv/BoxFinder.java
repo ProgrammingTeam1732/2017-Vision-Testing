@@ -7,10 +7,10 @@ public class BoxFinder {
 	private int[][] bitmap;
 	// public ArrayList<BoundingBox> allBoundingBoxes = new ArrayList<>();
 	public ArrayList<BoundingBox>	goodBoundingBoxes	= new ArrayList<>();
-	private static int				MIN_AREA			= 81;
+	private static int				MIN_AREA			= 40;
 	private static final int		BLACK				= 0;
 	private static final int		WHITE				= 0xFFFFFF;
-	private static final int		PRECISION			= 7;
+	private static final int		PRECISION			= 10;
 
 	public BoxFinder(int[][] aBitmap) {
 		bitmap = aBitmap;
