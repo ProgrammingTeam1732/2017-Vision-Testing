@@ -20,7 +20,8 @@ import org.opencv.highgui.VideoCapture;
 public class LiveVideoFeedHighFPS extends JFrame implements MouseListener {
 
 	public static volatile MatImage	matImage;
-	public static volatile boolean	updated	= false;
+	public static volatile boolean	copied	= false;
+	public static volatile Mat		matCopy;
 	JSlider							redSlider, greenSlider, blueSlider;
 
 	public LiveVideoFeedHighFPS() {
@@ -37,6 +38,7 @@ public class LiveVideoFeedHighFPS extends JFrame implements MouseListener {
 		Mat mat = new Mat();
 		camera.read(mat);
 		matImage = new MatImage(mat);
+		mat.copyTo(matCopy);
 
 		ImageIcon colorIcon = new ImageIcon(matImage.getBufferedImage());
 		JLabel colorLabel = new JLabel("", colorIcon, JLabel.LEFT);
@@ -92,19 +94,11 @@ public class LiveVideoFeedHighFPS extends JFrame implements MouseListener {
 
 		new Thread(() -> {
 			while (true) {
-				updated = false;
-				int tolerance = toleranceSlider.getValue();
-				int[] targetColor = new int[] { redSlider.getValue(), greenSlider.getValue(), blueSlider.getValue() };
-				field1.setText(String.format("Red: %d Green: %d%nBlue: %d Tolerance:%3d", targetColor[0],
-						targetColor[1], targetColor[2], tolerance));
-
 				camera.read(mat);
-				matImage.updateBufferedArray(mat);
-				matImage.updateBitmapArray(targetColor, tolerance);
-
-				matImage.detectBlobs();
-				matImage.drawBoxes(boxColor);
-				updated = true;
+				if (!copied) {
+					mat.copyTo(matCopy);
+					copied = true;
+				}
 			}
 		}).start();
 
@@ -114,8 +108,19 @@ public class LiveVideoFeedHighFPS extends JFrame implements MouseListener {
 		long beforePrevFPS = 1;
 		while (true) {
 			start = System.currentTimeMillis();
-			while (!updated)
-				;
+
+			int tolerance = toleranceSlider.getValue();
+			int[] targetColor = new int[] { redSlider.getValue(), greenSlider.getValue(), blueSlider.getValue() };
+			field1.setText(String.format("Red: %d Green: %d%nBlue: %d Tolerance:%3d", targetColor[0], targetColor[1],
+					targetColor[2], tolerance));
+
+			matImage.updateBufferedArray(matCopy);
+			copied = false;
+			matImage.updateBitmapArray(targetColor, tolerance);
+
+			matImage.detectBlobs();
+			matImage.drawBoxes(boxColor);
+
 			colorIcon.setImage(matImage.getBufferedImage());
 			bitmapIcon.setImage(matImage.getBitmapImage());
 
