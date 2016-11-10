@@ -118,7 +118,7 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 
 			beforePrevFPS = prevFPS;
 			prevFPS = FPS;
-			FPS = Math.round((1000.0 / (System.currentTimeMillis() - start)) / 5) * 5;
+			FPS = Math.round((1000.0 / (System.currentTimeMillis() - start)));
 		}
 	}
 

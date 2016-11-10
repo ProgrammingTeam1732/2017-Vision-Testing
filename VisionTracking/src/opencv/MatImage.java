@@ -420,6 +420,11 @@ public class MatImage {
 		return (dr * dr) + (db * db) + (dg * dg);
 	}
 
+	public static boolean isWithinTolerance(int[] a, int[] b, int tolerance) {
+		return Math.abs(b[0] - a[0]) < tolerance && Math.abs(b[1] - a[1]) < tolerance
+				&& Math.abs(b[2] - a[2]) < tolerance;
+	}
+
 	public static void setRGB(int[] array, int[] rgb) {
 		array[0] = rgb[0];
 		array[1] = rgb[1];
