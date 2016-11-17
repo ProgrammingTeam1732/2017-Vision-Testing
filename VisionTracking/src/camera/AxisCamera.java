@@ -13,9 +13,9 @@ import javax.imageio.ImageIO;
 
 public class AxisCamera {
 
-	private URL mainURL;
-	private URL cgiURL;
-	private URL mediaURL;
+	private URL	mainURL;
+	private URL	cgiURL;
+	private URL	mediaURL;
 
 	// The following settings are communicated to the camera when getting the
 	// image/stream or whatever
@@ -33,8 +33,8 @@ public class AxisCamera {
 
 	private Resolution resolution = Resolution.r800x600;
 
-	private int compression = 30;
-	private int fps = 10;
+	private int	compression	= 30;
+	private int	fps			= 10;
 
 	// The following settings must be sent and saved on the camera
 	public enum WhiteBalance {
@@ -44,23 +44,23 @@ public class AxisCamera {
 
 	private WhiteBalance whiteBalance;
 
-	private int brightness = 50;
-	public static final String BRIGHTNESS_PROPERTY = "root.ImageSource.I0.Sensor.Brightness";
+	private int					brightness			= 50;
+	public static final String	BRIGHTNESS_PROPERTY	= "root.ImageSource.I0.Sensor.Brightness";
 
-	private int colorLevel = 50;
-	public static final String COLOR_LEVEL_PROPERTY = "root.ImageSource.I0.Sensor.ColorLevel";
+	private int					colorLevel				= 50;
+	public static final String	COLOR_LEVEL_PROPERTY	= "root.ImageSource.I0.Sensor.ColorLevel";
 
-	private int contrast = 50;
-	public static final String CONTRAST_PROPERTY = "root.ImageSource.I0.Sensor.Contrast";
+	private int					contrast			= 50;
+	public static final String	CONTRAST_PROPERTY	= "root.ImageSource.I0.Sensor.Contrast";
 
-	private int exposureValue = 50;
-	public static final String EXPOSURE_VALUE_PROPERTY = "root.ImageSource.I0.Sensor.ExposureValue";
+	private int					exposureValue			= 50;
+	public static final String	EXPOSURE_VALUE_PROPERTY	= "root.ImageSource.I0.Sensor.ExposureValue";
 
-	private int sharpness = 50;
-	public static final String SHARPNESS_PROPERTY = "root.ImageSource.I0.Sensor.Sharpness";
+	private int					sharpness			= 50;
+	public static final String	SHARPNESS_PROPERTY	= "root.ImageSource.I0.Sensor.Sharpness";
 
-	private String USER = "root";
-	private String PASS = "root";
+	private String	USER	= "root";
+	private String	PASS	= "root";
 
 	public AxisCamera(String ip) throws MalformedURLException {
 		mainURL = new URL("http://" + ip);
