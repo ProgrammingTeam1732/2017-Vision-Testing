@@ -21,8 +21,6 @@ Install the latest stable version of openCV
 
 List of useful posts:
 
-Capture Constants: http://stackoverflow.com/questions/21066875/opencv-constants-captureproperty
-
-                   https://github.com/opencv/opencv/blob/f11715b6c32709c930bc22062e3a0c7dd4b4bac3/modules/videoio/include/opencv2/videoio/videoio_c.h
+Capture Constants: http://stackoverflow.com/questions/21066875/opencv-constants-captureproperty https://github.com/opencv/opencv/blob/f11715b6c32709c930bc22062e3a0c7dd4b4bac3/modules/videoio/include/opencv2/videoio/videoio_c.h
 
 openCV github repo (useful to look at c++ code): https://github.com/opencv/opencv/tree/f11715b6c32709c930bc22062e3a0c7dd4b4bac3
