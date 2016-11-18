@@ -18,3 +18,7 @@ Install openCV:
 http://docs.opencv.org/2.4/doc/tutorials/introduction/java_eclipse/java_eclipse.html
 
 Install the latest stable version of openCV
+
+List of useful posts:
+
+Capture Constants: http://stackoverflow.com/questions/21066875/opencv-constants-captureproperty
