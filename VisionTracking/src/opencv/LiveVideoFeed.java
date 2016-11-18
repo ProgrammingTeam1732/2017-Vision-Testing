@@ -32,7 +32,7 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 			System.load(opencvpath + "opencv_ffmpeg2413_64.dll");
 		VideoCapture camera = new VideoCapture(0);
 		// AxisCamera axisCamera = new AxisCamera("http://169.254.148.78/");
-		if (!camera.open("http://169.254.148.78/mjpg/video.mjpg")) {
+		if (!camera.open(0)) { // "http://169.254.148.78/mjpg/video.mjpg")) {
 			System.out.println("Error");
 		}
 		// System.out.println(axisCamera.getMjpgURL());
@@ -40,6 +40,7 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 		Mat mat = new Mat();
 		camera.read(mat);
 		matImage = new MatImage(mat);
+		camera.set(38, 2); // 38 = CV_CAP_PROP_BUFFERSIZE
 
 		ImageIcon colorIcon = new ImageIcon(matImage.getBufferedImage());
 		JLabel colorLabel = new JLabel("", colorIcon, JLabel.LEFT);
@@ -96,7 +97,6 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 		long FPS = 1;
 		long prevFPS = 1;
 		long beforePrevFPS = 1;
-		int[] boxColor = { 255, 0, 0 };
 		while (true) {
 			start = System.currentTimeMillis();
 

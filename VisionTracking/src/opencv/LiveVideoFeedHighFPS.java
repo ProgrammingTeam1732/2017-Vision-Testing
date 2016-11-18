@@ -19,9 +19,9 @@ import org.opencv.highgui.VideoCapture;
 
 public class LiveVideoFeedHighFPS extends JFrame implements MouseListener {
 
+	private static final long serialVersionUID = 1L;
+	// we don't actually use this ^
 	public static volatile MatImage	matImage;
-	public static volatile boolean	copied	= false;
-	public static volatile Mat		matCopy;
 	JSlider							redSlider, greenSlider, blueSlider;
 
 	public LiveVideoFeedHighFPS() {
@@ -35,11 +35,10 @@ public class LiveVideoFeedHighFPS extends JFrame implements MouseListener {
 		if (!camera.open(0)) { // "http://169.254.148.78/mjpg/video.mjpg")) {
 			System.out.println("Error");
 		}
+		// camera.set(38, 2); // 38 = CV_CAP_PROP_BUFFERSIZE
 		Mat mat = new Mat();
 		camera.read(mat);
 		matImage = new MatImage(mat);
-		matCopy = new Mat();
-		mat.copyTo(matCopy);
 
 		ImageIcon colorIcon = new ImageIcon(matImage.getBufferedImage());
 		JLabel colorLabel = new JLabel("", colorIcon, JLabel.LEFT);
@@ -94,11 +93,7 @@ public class LiveVideoFeedHighFPS extends JFrame implements MouseListener {
 
 		new Thread(() -> {
 			while (true) {
-				camera.read(mat);
-				if (!copied) {
-					mat.copyTo(matCopy);
-					copied = true;
-				}
+				camera.grab();
 			}
 		}).start();
 
@@ -113,9 +108,8 @@ public class LiveVideoFeedHighFPS extends JFrame implements MouseListener {
 			int[] targetColor = new int[] { redSlider.getValue(), greenSlider.getValue(), blueSlider.getValue() };
 			field1.setText(String.format("Red: %d Green: %d%nBlue: %d Tolerance:%3d", targetColor[0], targetColor[1],
 					targetColor[2], tolerance));
-
-			matImage.updateBufferedArray(matCopy);
-			copied = false;
+			camera.retrieve(mat);
+			matImage.updateBufferedArray(mat);
 			matImage.updateBitmapArray(targetColor, tolerance);
 
 			matImage.detectBlobs();
