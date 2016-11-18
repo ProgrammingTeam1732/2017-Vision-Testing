@@ -40,7 +40,7 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 		Mat mat = new Mat();
 		camera.read(mat);
 		matImage = new MatImage(mat);
-		camera.set(38, 2); // 38 = CV_CAP_PROP_BUFFERSIZE
+		camera.set(38, 3); // 38 = CV_CAP_PROP_BUFFERSIZE
 
 		ImageIcon colorIcon = new ImageIcon(matImage.getBufferedImage());
 		JLabel colorLabel = new JLabel("", colorIcon, JLabel.LEFT);

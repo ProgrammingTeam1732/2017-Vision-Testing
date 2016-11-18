@@ -163,20 +163,10 @@ public class MatImage {
 				pixelA = bufferedArray[row][col];
 				pixelB = bufferedArray[row + 1][col];
 				pixelC = bufferedArray[row][col + 1];
-				if (Math.abs(pixelA[0] - pixelB[0]) >= tolerance)
-					setRGB(bufferedArray[row][col], 0, 0, 0);
-				else if (Math.abs(pixelA[1] - pixelB[1]) >= tolerance)
-					setRGB(bufferedArray[row][col], 0, 0, 0);
-				else if (Math.abs(pixelA[2] - pixelB[2]) >= tolerance)
-					setRGB(bufferedArray[row][col], 0, 0, 0);
-				else if (Math.abs(pixelA[0] - pixelC[0]) >= tolerance)
-					setRGB(bufferedArray[row][col], 0, 0, 0);
-				else if (Math.abs(pixelA[1] - pixelC[1]) >= tolerance)
-					setRGB(bufferedArray[row][col], 0, 0, 0);
-				else if (Math.abs(pixelA[2] - pixelC[2]) >= tolerance)
-					setRGB(bufferedArray[row][col], 0, 0, 0);
+				if (!isWithinTolerance(pixelA, pixelB, tolerance) || !isWithinTolerance(pixelA, pixelC, tolerance))
+					setBlack(bufferedArray[row][col]);
 				else
-					setRGB(bufferedArray[row][col], 255, 255, 255);
+					setWhite(bufferedArray[row][col]);
 			}
 		}
 	}
@@ -190,17 +180,7 @@ public class MatImage {
 				pixelA = bufferedArray[row][col];
 				pixelB = bufferedArray[row + 1][col];
 				pixelC = bufferedArray[row][col + 1];
-				if (Math.abs(pixelA[0] - pixelB[0]) >= tolerance)
-					setRGB(bufferedArray[row][col], pencil);
-				else if (Math.abs(pixelA[1] - pixelB[1]) >= tolerance)
-					setRGB(bufferedArray[row][col], pencil);
-				else if (Math.abs(pixelA[2] - pixelB[2]) >= tolerance)
-					setRGB(bufferedArray[row][col], pencil);
-				else if (Math.abs(pixelA[0] - pixelC[0]) >= tolerance)
-					setRGB(bufferedArray[row][col], pencil);
-				else if (Math.abs(pixelA[1] - pixelC[1]) >= tolerance)
-					setRGB(bufferedArray[row][col], pencil);
-				else if (Math.abs(pixelA[2] - pixelC[2]) >= tolerance)
+				if (!isWithinTolerance(pixelA, pixelB, tolerance) || !isWithinTolerance(pixelA, pixelC, tolerance))
 					setRGB(bufferedArray[row][col], pencil);
 				else
 					setRGB(bufferedArray[row][col], background);
@@ -217,18 +197,8 @@ public class MatImage {
 				pixelA = bufferedArray[row][col];
 				pixelB = bufferedArray[row + 1][col];
 				pixelC = bufferedArray[row][col + 1];
-				if (Math.abs(pixelA[0] - pixelB[0]) >= tolerance)
-					setRGB(bufferedArray[row][col], 0, 0, 0);
-				else if (Math.abs(pixelA[1] - pixelB[1]) >= tolerance)
-					setRGB(bufferedArray[row][col], 0, 0, 0);
-				else if (Math.abs(pixelA[2] - pixelB[2]) >= tolerance)
-					setRGB(bufferedArray[row][col], 0, 0, 0);
-				else if (Math.abs(pixelA[0] - pixelC[0]) >= tolerance)
-					setRGB(bufferedArray[row][col], 0, 0, 0);
-				else if (Math.abs(pixelA[1] - pixelC[1]) >= tolerance)
-					setRGB(bufferedArray[row][col], 0, 0, 0);
-				else if (Math.abs(pixelA[2] - pixelC[2]) >= tolerance)
-					setRGB(bufferedArray[row][col], 0, 0, 0);
+				if (!isWithinTolerance(pixelA, pixelB, tolerance) || !isWithinTolerance(pixelA, pixelC, tolerance))
+					setBlack(bufferedArray[row][col]);
 			}
 		}
 	}
@@ -361,9 +331,9 @@ public class MatImage {
 			for (int col = 0; col < bufferedArray[row].length; col++) {
 				pixel = bufferedArray[row][col];
 				if (Math.abs(pixel[0] - pixel[2]) > tolerance && Math.abs(pixel[0] - pixel[1]) > tolerance)
-					setRGB(bufferedArray[row][col], 255, 255, 255);
+					setWhite(bufferedArray[row][col]);
 				else
-					setRGB(bufferedArray[row][col], 0, 0, 0);
+					setBlack(bufferedArray[row][col]);
 			}
 		}
 	}
@@ -374,9 +344,9 @@ public class MatImage {
 			for (int col = 0; col < bufferedArray[row].length; col++) {
 				pixel = bufferedArray[row][col];
 				if (Math.abs(pixel[1] - pixel[2]) > tolerance && Math.abs(pixel[1] - pixel[0]) > tolerance)
-					setRGB(bufferedArray[row][col], 255, 255, 255);
+					setWhite(bufferedArray[row][col]);
 				else
-					setRGB(bufferedArray[row][col], 0, 0, 0);
+					setBlack(bufferedArray[row][col]);
 			}
 		}
 	}
@@ -387,9 +357,9 @@ public class MatImage {
 			for (int col = 0; col < bufferedArray[row].length; col++) {
 				pixel = bufferedArray[row][col];
 				if (Math.abs(pixel[2] - pixel[1]) > tolerance && Math.abs(pixel[2] - pixel[0]) > tolerance)
-					setRGB(bufferedArray[row][col], 255, 255, 255);
+					setWhite(bufferedArray[row][col]);
 				else
-					setRGB(bufferedArray[row][col], 0, 0, 0);
+					setBlack(bufferedArray[row][col]);
 			}
 		}
 	}
@@ -398,7 +368,7 @@ public class MatImage {
 		for (int row = 0; row < bufferedArray.length; row++) {
 			for (int col = 0; col < bufferedArray[row].length; col++) {
 				if (getDistanceSquared(bufferedArray[row][col], rgb) < tolerance * tolerance)
-					setRGB(bufferedArray[row][col], 255, 255, 255);
+					setWhite(bufferedArray[row][col]);
 			}
 		}
 	}
@@ -437,6 +407,18 @@ public class MatImage {
 		array[0] = red;
 		array[1] = green;
 		array[2] = blue;
+	}
+
+	public static void setBlack(int[] array) {
+		array[0] = 0;
+		array[1] = 0;
+		array[2] = 0;
+	}
+
+	public static void setWhite(int[] array) {
+		array[0] = 255;
+		array[1] = 255;
+		array[2] = 255;
 	}
 
 }

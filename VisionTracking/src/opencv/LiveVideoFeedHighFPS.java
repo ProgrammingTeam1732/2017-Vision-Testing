@@ -35,7 +35,7 @@ public class LiveVideoFeedHighFPS extends JFrame implements MouseListener {
 		if (!camera.open(0)) { // "http://169.254.148.78/mjpg/video.mjpg")) {
 			System.out.println("Error");
 		}
-		// camera.set(38, 2); // 38 = CV_CAP_PROP_BUFFERSIZE
+		// camera.set(38, 3); // 38 = CV_CAP_PROP_BUFFERSIZE
 		Mat mat = new Mat();
 		camera.read(mat);
 		matImage = new MatImage(mat);
