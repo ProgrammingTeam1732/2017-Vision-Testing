@@ -31,10 +31,12 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 		if (Core.VERSION.equals("2.4.13.0"))
 			System.load(opencvpath + "opencv_ffmpeg2413_64.dll");
 		VideoCapture camera = new VideoCapture(0);
-
-		if (!camera.open(0)) { // "http://169.254.148.78/mjpg/video.mjpg")) {
+		// AxisCamera axisCamera = new AxisCamera("http://169.254.148.78/");
+		if (!camera.open("http://169.254.148.78/mjpg/video.mjpg")) {
 			System.out.println("Error");
 		}
+		// System.out.println(axisCamera.getMjpgURL());
+		// axisCamera.setCompression(70);
 		Mat mat = new Mat();
 		camera.read(mat);
 		matImage = new MatImage(mat);
