@@ -21,8 +21,9 @@ public class LiveVideoFeedHighFPS extends JFrame implements MouseListener {
 
 	private static final long serialVersionUID = 1L;
 	// we don't actually use this ^
-	public static volatile MatImage	matImage;
-	JSlider							redSlider, greenSlider, blueSlider;
+	private MatImage			matImage;
+	private volatile boolean	update;
+	private JSlider				redSlider, greenSlider, blueSlider;
 
 	public LiveVideoFeedHighFPS() {
 		String opencvpath = System.getProperty("user.dir") + "\\files\\";
@@ -32,10 +33,10 @@ public class LiveVideoFeedHighFPS extends JFrame implements MouseListener {
 			System.load(opencvpath + "opencv_ffmpeg2413_64.dll");
 		VideoCapture camera = new VideoCapture(0);
 
-		if (!camera.open(0)) { // "http://169.254.148.78/mjpg/video.mjpg")) {
+		if (!camera.open("http://169.254.148.78/mjpg/video.mjpg")) {
 			System.out.println("Error");
 		}
-		// camera.set(38, 3); // 38 = CV_CAP_PROP_BUFFERSIZE
+		camera.set(38, 3); // 38 = CV_CAP_PROP_BUFFERSIZE
 		Mat mat = new Mat();
 		camera.read(mat);
 		matImage = new MatImage(mat);
@@ -93,7 +94,10 @@ public class LiveVideoFeedHighFPS extends JFrame implements MouseListener {
 
 		new Thread(() -> {
 			while (true) {
-				camera.grab();
+				if (update) {
+					camera.grab();
+					update = false;
+				}
 			}
 		}).start();
 
@@ -109,6 +113,7 @@ public class LiveVideoFeedHighFPS extends JFrame implements MouseListener {
 			field1.setText(String.format("Red: %d Green: %d%nBlue: %d Tolerance:%3d", targetColor[0], targetColor[1],
 					targetColor[2], tolerance));
 			camera.retrieve(mat);
+			update = true;
 			matImage.updateBufferedArray(mat);
 			matImage.updateBitmapArray(targetColor, tolerance);
 
