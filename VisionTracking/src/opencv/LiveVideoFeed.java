@@ -1,10 +1,13 @@
 package opencv;
 
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -52,7 +55,7 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 		JLabel bitmapLabel = new JLabel("", bitmapIcon, JLabel.LEFT);
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setResizable(false);
+		this.setResizable(true);
 		this.setSize(colorIcon.getIconWidth() * 2, colorIcon.getIconHeight() + 123);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation(dim.width / 2 - this.getWidth() / 2, dim.height / 2 - this.getHeight() / 2);
@@ -111,9 +114,9 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 
 			matImage.detectBlobs();
 			matImage.drawBoxes();
-
-			colorIcon.setImage(matImage.getBufferedImage());
-			bitmapIcon.setImage(matImage.getBitmapImage());
+			//b = resize(matImage.getBufferedImage(), 800, 600);
+			colorIcon.setImage(matImage.getBufferedImage());//matImage.getBufferedImage())//resize(matImage.getBufferedImage(), 640, 480));
+			bitmapIcon.setImage(matImage.getBitmapImage());//resize(matImage.getBitmapImage(), 640, 480));
 
 			this.setTitle("FPS: " + (FPS + prevFPS + beforePrevFPS) / 3);
 			this.repaint();
@@ -123,7 +126,16 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 			FPS = Math.round((1000.0 / (System.currentTimeMillis() - start)));
 		}
 	}
+	public static BufferedImage resize(BufferedImage img, int newW, int newH) { 
+	    Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+	    BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
 
+	    Graphics2D g2d = dimg.createGraphics();
+	    g2d.drawImage(tmp, 0, 0, null);
+	    g2d.dispose();
+
+	    return dimg;
+	} 
 	public static void main(String[] args) {
 		new LiveVideoFeed();
 	}

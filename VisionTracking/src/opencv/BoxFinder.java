@@ -7,10 +7,10 @@ public class BoxFinder {
 	private int[][] bitmap;
 	// public ArrayList<BoundingBox> allBoundingBoxes = new ArrayList<>();
 	public ArrayList<BoundingBox>	goodBoundingBoxes	= new ArrayList<>();
-	private static int				MIN_AREA			= 40;
+	private static int				MIN_AREA =40;
 	private static final int		BLACK				= 0;
 	private static final int		WHITE				= 0xFFFFFF;
-	private static final int		PRECISION			= 10;
+	private static final int		PRECISION			= 4;
 
 	public BoxFinder(int[][] aBitmap) {
 		bitmap = aBitmap;
@@ -20,10 +20,6 @@ public class BoxFinder {
 
 	public BoundingBox getLargestBox() {
 		return goodBoundingBoxes.size() == 0 ? null : goodBoundingBoxes.get(0);
-	}
-
-	public static void setMinArea(int aMinArea) {
-		MIN_AREA = aMinArea;
 	}
 
 	private void clearEdges() {
@@ -106,57 +102,56 @@ public class BoxFinder {
 
 		public boolean checkBounds(int[][] bitmap, int precision) {
 			// check corners
-			for (int count = 0; count < 2; count++) {
-				if (!(rowMin - precision < 0 || rowMax + precision >= bitmap.length || colMin - precision < 0
-						|| colMax + precision >= bitmap[bitmap.length - 1].length)) {
-					if (bitmap[rowMin - precision][colMin - precision] == WHITE) {// top
+			for (int p = precision; p > 0; p--) {
+				if (!(rowMin - p < 0 || rowMax + p >= bitmap.length || colMin - p < 0
+						|| colMax + p >= bitmap[bitmap.length - 1].length)) {
+					if (bitmap[rowMin - p][colMin - p] == WHITE) {// top
 																					// left
-						rowMin -= precision;
-						colMin -= precision;
+						rowMin -= p;
+						colMin -= p;
 						return false;
 					}
-					if (bitmap[rowMin - precision][colMax + precision] == WHITE) { // top
+					if (bitmap[rowMin - p][colMax + p] == WHITE) { // top
 																					// right
-						rowMin -= precision;
-						colMax += precision;
+						rowMin -= p;
+						colMax += p;
 						return false;
 					}
-					if (bitmap[rowMax + precision][colMin - precision] == WHITE) { // bottom
+					if (bitmap[rowMax + p][colMin - p] == WHITE) { // bottom
 																					// left
-						rowMax += precision;
-						colMin -= precision;
+						rowMax += p;
+						colMin -= p;
 						return false;
 					}
-					if (bitmap[rowMax + precision][colMax + precision] == WHITE) { // bottom
+					if (bitmap[rowMax + p][colMax + p] == WHITE) { // bottom
 																					// right
-						rowMax += precision;
-						colMax += precision;
+						rowMax += p;
+						colMax += p;
 						return false;
 					}
 					// checks left and right
 					for (int i = rowMin; i <= rowMax; i++) {
-						if (bitmap[i][colMin - precision] == WHITE) {
-							colMin -= precision; // expand box
+						if (bitmap[i][colMin - p] == WHITE) {
+							colMin -= p; // expand box
 							return false;
 						}
-						if (bitmap[i][colMax + precision] == WHITE) {
-							colMax += precision; // expand box
+						if (bitmap[i][colMax + p] == WHITE) {
+							colMax += p; // expand box
 							return false;
 						}
 					}
 					// checks top and bottom
 					for (int j = colMin; j <= colMax; j++) {
-						if (bitmap[rowMin - precision][j] == WHITE) {
-							rowMin -= precision;
+						if (bitmap[rowMin - p][j] == WHITE) {
+							rowMin -= p;
 							return false;
 						}
-						if (bitmap[rowMax + precision][j] == WHITE) {
-							rowMax += precision;
+						if (bitmap[rowMax + p][j] == WHITE) {
+							rowMax += p;
 							return false;
 						}
 					}
 				}
-				precision = 1;
 			}
 			return true;
 		}

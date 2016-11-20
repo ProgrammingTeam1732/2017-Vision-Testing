@@ -30,11 +30,9 @@ public class AxisCamera {
 			value = s;
 		}
 	}
-
+	
 	private Resolution resolution = Resolution.r800x600;
 
-	private int	compression	= 30;
-	private int	fps			= 10;
 
 	// The following settings must be sent and saved on the camera
 	public enum WhiteBalance {
@@ -81,53 +79,53 @@ public class AxisCamera {
 	}
 
 	public URL getBmpURL() {
-		return relativeURL(cgiURL, "/bitmap/image.bmp" + getImageArguements());
+		return relativeURL(cgiURL, "/bitmap/image.bmp");// + getImageArguements());
 	}
 
 	public URL getImageURL() {
-		return relativeURL(cgiURL, "/jpg/image.cgi" + getImageArguements());
+		return relativeURL(cgiURL, "/jpg/image.cgi");// + getImageArguements());
 	}
 
 	// http://169.254.148.78/mjpg/video.mjpg
-	public URL getMjpgURL() {
-		return relativeURL(cgiURL, String.format("/mjpg/video.cgi%s&fps=%d", getImageArguements(), fps));
-	}
-
-	private String getImageArguements() {
-		return String.format("?resolution=%s&compression=%s", resolution.value, compression);
-	}
+//	public URL getMjpgURL() {
+//		return relativeURL(cgiURL, String.format("/mjpg/video.cgi%s&fps=%d", getImageArguements(), fps));
+//	}
+//
+//	private String getImageArguements() {
+//		return String.format("?resolution=%s&compression=%s", resolution.value, compression);
+//	}
 
 	public URL getRtspURL() {
 		return relativeURL(mediaURL, "/media.amp");
 	}
 
-	public void setResolution(Resolution r) {
-		resolution = r;
-	}
+//	public void setResolution(Resolution r) {
+//		resolution = r;
+//	}
+//
+//	public Resolution getResolution() {
+//		return resolution;
+//	}
 
-	public Resolution getResolution() {
-		return resolution;
-	}
-
-	public void setCompression(int aCompression) {
-		// sets to 0 if less than 0, if greater than 0 checks if greater than
-		// 100 then sets to 100, otherwise sets to aCompression
-		compression = aCompression < 0 ? 0 : aCompression > 100 ? 100 : aCompression;
-
-	}
-
-	public int getCompression() {
-		return compression;
-	}
-
-	public void setFPS(int aFPS) {
-		// if less than 0 sets it to 0
-		fps = aFPS < 0 ? 0 : aFPS;
-	}
-
-	public int getFPS() {
-		return fps;
-	}
+//	public void setCompression(int aCompression) {
+//		// sets to 0 if less than 0, if greater than 0 checks if greater than
+//		// 100 then sets to 100, otherwise sets to aCompression
+//		compression = aCompression < 0 ? 0 : aCompression > 100 ? 100 : aCompression;
+//
+//	}
+//
+//	public int getCompression() {
+//		return compression;
+//	}
+//
+//	public void setFPS(int aFPS) {
+//		// if less than 0 sets it to 0
+//		fps = aFPS < 0 ? 0 : aFPS;
+//	}
+//
+//	public int getFPS() {
+//		return fps;
+//	}
 
 	public WhiteBalance getWhiteBalance() {
 		return whiteBalance;
