@@ -33,9 +33,9 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 		// needed in order to run the axis camera
 		if (Core.VERSION.equals("2.4.13.0"))
 			System.load(opencvpath + "opencv_ffmpeg2413_64.dll");
-		VideoCapture camera = new VideoCapture(0);
+		VideoCapture camera = new VideoCapture(1);
 		// AxisCamera axisCamera = new AxisCamera("http://169.254.148.78/");
-		if (!camera.open("http://169.254.148.78/mjpg/video.mjpg")) {
+		if (!camera.open(1)) {
 			System.out.println("Error");
 		}
 		// System.out.println(axisCamera.getMjpgURL());
@@ -105,8 +105,8 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 
 			int tolerance = toleranceSlider.getValue();
 			int[] targetColor = new int[] { redSlider.getValue(), greenSlider.getValue(), blueSlider.getValue() };
-			field1.setText(String.format("Red: %d Green: %d%nBlue: %d Tolerance:%3d", targetColor[0], targetColor[1],
-					targetColor[2], tolerance));
+			field1.setText(String.format(	"Red: %d Green: %d%nBlue: %d Tolerance:%3d", targetColor[0], targetColor[1],
+											targetColor[2], tolerance));
 
 			camera.read(mat);
 			matImage.updateBufferedArray(mat);
@@ -114,9 +114,11 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 
 			matImage.detectBlobs();
 			matImage.drawBoxes();
-			//b = resize(matImage.getBufferedImage(), 800, 600);
-			colorIcon.setImage(matImage.getBufferedImage());//matImage.getBufferedImage())//resize(matImage.getBufferedImage(), 640, 480));
-			bitmapIcon.setImage(matImage.getBitmapImage());//resize(matImage.getBitmapImage(), 640, 480));
+			// b = resize(matImage.getBufferedImage(), 800, 600);
+			colorIcon.setImage(matImage.getBufferedImage());// matImage.getBufferedImage())//resize(matImage.getBufferedImage(),
+															// 640, 480));
+			bitmapIcon.setImage(matImage.getBitmapImage());// resize(matImage.getBitmapImage(),
+															// 640, 480));
 
 			this.setTitle("FPS: " + (FPS + prevFPS + beforePrevFPS) / 3);
 			this.repaint();
@@ -126,16 +128,18 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 			FPS = Math.round((1000.0 / (System.currentTimeMillis() - start)));
 		}
 	}
-	public static BufferedImage resize(BufferedImage img, int newW, int newH) { 
-	    Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
-	    BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
 
-	    Graphics2D g2d = dimg.createGraphics();
-	    g2d.drawImage(tmp, 0, 0, null);
-	    g2d.dispose();
+	public static BufferedImage resize(BufferedImage img, int newW, int newH) {
+		Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+		BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
 
-	    return dimg;
-	} 
+		Graphics2D g2d = dimg.createGraphics();
+		g2d.drawImage(tmp, 0, 0, null);
+		g2d.dispose();
+
+		return dimg;
+	}
+
 	public static void main(String[] args) {
 		new LiveVideoFeed();
 	}
@@ -150,18 +154,14 @@ public class LiveVideoFeed extends JFrame implements MouseListener {
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
-	}
+	public void mouseEntered(MouseEvent e) {}
 
 	@Override
-	public void mouseExited(MouseEvent e) {
-	}
+	public void mouseExited(MouseEvent e) {}
 
 	@Override
-	public void mousePressed(MouseEvent e) {
-	}
+	public void mousePressed(MouseEvent e) {}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {
-	}
+	public void mouseReleased(MouseEvent e) {}
 }

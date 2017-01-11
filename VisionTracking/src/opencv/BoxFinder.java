@@ -7,7 +7,7 @@ public class BoxFinder {
 	private int[][] bitmap;
 	// public ArrayList<BoundingBox> allBoundingBoxes = new ArrayList<>();
 	public ArrayList<BoundingBox>	goodBoundingBoxes	= new ArrayList<>();
-	private static int				MIN_AREA =40;
+	private static int				MIN_AREA			= 40;
 	private static final int		BLACK				= 0;
 	private static final int		WHITE				= 0xFFFFFF;
 	private static final int		PRECISION			= 4;
@@ -36,7 +36,8 @@ public class BoxFinder {
 	private void findBoxes() {
 		int startColumn = 1;
 		int startRow = 1;
-		findStart: for (int row = startRow; row < bitmap.length - 1; row++) {
+		findStart:
+		for (int row = startRow; row < bitmap.length - 1; row++) {
 			for (int col = startColumn; col < bitmap[0].length - 1; col++) {
 				if (bitmap[row][col] == WHITE) {
 					startColumn = col;
@@ -78,8 +79,7 @@ public class BoxFinder {
 
 	private BoundingBox findABox(int startRow, int startColumn) {
 		BoundingBox box = new BoundingBox(startColumn, startRow, startColumn, startRow);
-		while (!box.checkBounds(bitmap, PRECISION)) {
-		}
+		while (!box.checkBounds(bitmap, PRECISION)) {}
 		return box;
 	}
 
@@ -106,25 +106,25 @@ public class BoxFinder {
 				if (!(rowMin - p < 0 || rowMax + p >= bitmap.length || colMin - p < 0
 						|| colMax + p >= bitmap[bitmap.length - 1].length)) {
 					if (bitmap[rowMin - p][colMin - p] == WHITE) {// top
-																					// left
+																	// left
 						rowMin -= p;
 						colMin -= p;
 						return false;
 					}
 					if (bitmap[rowMin - p][colMax + p] == WHITE) { // top
-																					// right
+																	// right
 						rowMin -= p;
 						colMax += p;
 						return false;
 					}
 					if (bitmap[rowMax + p][colMin - p] == WHITE) { // bottom
-																					// left
+																	// left
 						rowMax += p;
 						colMin -= p;
 						return false;
 					}
 					if (bitmap[rowMax + p][colMax + p] == WHITE) { // bottom
-																					// right
+																	// right
 						rowMax += p;
 						colMax += p;
 						return false;
