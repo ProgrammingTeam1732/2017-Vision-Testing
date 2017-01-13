@@ -21,7 +21,7 @@ public class MatImage {
 		double[] pixel;
 		for (int row = 0; row < bufferedArray.length; row++) {
 			for (int col = 0; col < bufferedArray[row].length; col++) {
-				pixel = mat.get(row, col);
+				pixel  = mat.get(row, col);
 				setRGB(bufferedArray[row][col], (int) pixel[2], (int) pixel[1], (int) pixel[0]);
 			}
 		}

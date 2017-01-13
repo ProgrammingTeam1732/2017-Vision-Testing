@@ -21,7 +21,7 @@ public class Main {
 		System.load(opencvpath + "opencv_ffmpeg310_64.dll");
 		System.out.printf("%s%n", Core.VERSION);
 		VideoCapture vc = new VideoCapture("http://169.254.148.78/mjpg/video.mjpg");
-		if (vc.open("http://169.254.148.78/mjpg/video.mjpg")) {
+		if (vc.open(0)) {
 			System.out.println("Success");
 		}
 		Mat mat = new Mat();
