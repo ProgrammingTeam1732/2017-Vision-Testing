@@ -1,20 +1,17 @@
 
 
 package org.usfirst.frc.team1732.robot;
-import gnu.io.*;
+import java.io.IOException;
+
+//import gnu.io.*;
 import edu.wpi.first.wpilibj.SerialPort;
 public class Arduino {
-    /*
-     * Hopefully, i will be able to have an arduino be hooked up to the robot
-     * and communicate with the serial port.  I can use this to do many things,
-     * such as maintain a LCD screen and display data on it to help the electrical
-     * and mechanical teams figure out what went wrong.
-     *
-     * In all realism, it will most likely just be a fun cool thing for me to
-     * play with :D
-     */
     private SerialPort serial;
-
+    public volatile int sig;
+    public volatile int x;
+    public volatile int y;
+    public volatile int width;
+    public volatile int height;
     public Arduino() {
         try {
             serial = new SerialPort(9600, SerialPort.Port.kUSB1);
@@ -31,17 +28,47 @@ public class Arduino {
             System.out.println("something went wrong, " + e.getMessage());
         }
     }
-
+    private String buffer = "";
+    //private String total = "";
+	//private boolean dollar = false;
     public String getData() {
         try {
-            return this.serial.readString();
+        	//serial.enableTermination();
+        	String s = this.serial.readString();
+        	while(!s.contains("\n"))// || s.length() < 35 || !s.contains("Detected")) 
+        		s += this.serial.readString();
+        	return s;
+        	//return this.serial.readString();
+        	/*if(s.contains("$") && s.contains("^"))
+        		return s.substring(s.indexOf('$'), s.indexOf('^'));
+        	else if(s.contains("$"))
+        		return s.substring(s.indexOf('$'));
+        	else if(s.contains("^"))
+        		return s.substring(0, s.indexOf('^'));
+        	else{
+        		return s;
+        	}*/
+        	//boolean carrot = false;
+        	/*for(int i = 0; i < s.length(); i++){
+        		char c = s.charAt(i);
+        		if(dollar){
+        			total += c;
+        		}
+        		if(c == '$'){ 
+        			dollar = true;
+        		}else if(c == '^'){
+        			dollar = false;
+        			return total;
+        		}
+        	}
+        	return total;*/
         } catch (Exception e) {
             System.out.println("something went wrong, " + e.getMessage());
             return null;
         }
     }
 
-    public boolean sendData(byte[] buffer) throws Exception {
+	public boolean sendData(byte[] buffer) throws Exception {
         try {
             int count = buffer.length;
             this.serial.write(buffer, count);
@@ -72,16 +99,16 @@ public class Arduino {
         }
     }
 
-    public int requestData(String request) {
-        try {
-        	System.out.println(request);
-            return Integer.parseInt(this.getData());
-        } catch (Exception e) {
-            System.out.println("something went wrong, " + e.getMessage());
-            return 0;
-        }
-    }
-    public static void main(String[] args){
-    	new Arduino();
-    }
+//    public int requestData(String request) {
+//        try {
+//        	System.out.println(request);
+//            return Integer.parseInt(this.getData());
+//        } catch (Exception e) {
+//            System.out.println("something went wrong, " + e.getMessage());
+//            return 0;
+//        }
+//    }
+    //public static void main(String[] args){
+    //	new Arduino();
+    //}
 }
