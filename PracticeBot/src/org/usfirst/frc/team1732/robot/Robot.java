@@ -1,6 +1,8 @@
 
 package org.usfirst.frc.team1732.robot;
 
+import java.awt.Rectangle;
+
 import com.ctre.CANTalon;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -168,7 +170,11 @@ public class Robot extends IterativeRobot {
 		rightTalon3.set(controller.getRawAxis(1) / 2);
 
 	}
-
+	public Rectangle[] parseString(String regex){
+		String[] ss = regex.split(" ");
+		Rectangle[] total = new Rectangle[Integer.parseInt(ss[2].substring(0, ss[2].length() -1))];
+		return null;
+	}
 	/**
 	 * This function is called periodically during test mode
 	 */
